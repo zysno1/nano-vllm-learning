@@ -1,13 +1,28 @@
 # nano-vLLM Learning
 
-一个专为学习 vLLM 而设计的精简项目，帮助理解大语言模型推理的核心概念和实现。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-1.9+-red.svg)](https://pytorch.org/)
 
-## 🎯 项目特色
+一个专为学习 nano-vLLM 大语言模型推理引擎而设计的全面学习项目，帮助开发者从零开始理解和掌握高性能推理引擎的核心技术。
 
-- **新手友好**：从零基础到熟练掌握的完整学习路径
-- **实践导向**：丰富的示例代码和分步骤教程
-- **文档完善**：详细的概念解释和常见问题解答
-- **测试完备**：配套的测试用例确保学习效果
+## 📋 项目概述
+
+本项目是一个系统化的 nano-vLLM 学习资源库，包含完整的理论文档、实践代码、性能测试工具和部署方案。项目旨在帮助开发者深入理解大语言模型推理的核心原理，掌握高性能推理引擎的设计和实现技术。
+
+### 🎯 主要功能
+
+- **📚 完整学习体系**：从基础概念到高级主题的全面覆盖
+- **💻 实践代码**：丰富的示例和工具脚本
+- **🔧 性能测试**：基准测试和性能评估工具
+- **🚀 部署集成**：多种框架和平台的集成示例
+- **📖 技术文档**：深度技术文档和学习指南
+
+### 🎯 项目特色
+
+- **新手友好**：完整的学习路径和分步教程
+- **实践导向**：丰富的示例代码和实际应用
+- **文档完善**：详细的概念解释和问题解答
 
 ## 📚 学习内容
 
@@ -101,26 +116,40 @@ examples/
     └── fix_validator.py       # 修复验证工具
 ```
 
+
+
 ## 🚀 快速开始
 
-### 1. 环境准备
+### 📋 系统要求
+
+#### 硬件要求
+- **CPU**: Intel/AMD x64 处理器，推荐8核心以上
+- **内存**: 最低16GB RAM，推荐32GB以上
+- **GPU**: NVIDIA GPU (支持CUDA 11.0+)，推荐RTX 3080/4080或V100/A100
+- **存储**: 至少50GB可用磁盘空间
+
+#### 软件环境
+- **操作系统**: Linux (Ubuntu 18.04+), macOS (10.15+), Windows 10+
+- **Python**: 3.8+ (推荐3.9或3.10)
+- **CUDA**: 11.0+ (如使用GPU)
+- **Docker**: 20.10+ (可选，用于容器化部署)
+
+### 🔧 安装和配置
 
 ```bash
-# 克隆项目
-git clone <repository-url>
+# 1. 克隆项目
+git clone https://github.com/zysno1/nano-vllm-learning.git
 cd nano-vllm-learning
 
-# 自动配置环境
-python examples/03-setup-scripts/setup_environment.py
+# 2. 安装依赖
+pip install -r requirements.txt
 
-# 检查系统兼容性
-python examples/03-setup-scripts/check_system.py
-
-# 安装依赖
-python examples/03-setup-scripts/install_dependencies.py
+# 3. 验证安装
+python examples/00-quick-start/hello_vllm.py
 ```
 
-### 2. 基本使用
+
+## 🚀 基本使用
 
 ```bash
 # 简单推理示例
@@ -129,34 +158,8 @@ python examples/01-basic-usage/simple_inference.py
 # 批量推理示例
 python examples/01-basic-usage/batch_inference.py
 
-# 流式推理示例
-python examples/01-basic-usage/streaming_inference.py
-```
-
-### 3. 性能测试
-
-```bash
-# 运行综合基准测试
+# 性能测试
 python examples/02-performance-testing/benchmark.py
-
-# 延迟测试
-python examples/02-performance-testing/latency_test.py
-
-# 吞吐量测试
-python examples/02-performance-testing/throughput_test.py
-```
-
-### 4. 高级功能
-
-```bash
-# 生产级服务器
-python examples/04-advanced-examples/production_server.py
-
-# 动态批处理
-python examples/04-advanced-examples/dynamic_batching.py
-
-# 内存优化
-python examples/04-advanced-examples/memory_optimization.py
 ```
 
 ### 5. 集成示例
@@ -167,9 +170,6 @@ python examples/05-integration-examples/fastapi_integration.py
 
 # Gradio界面
 python examples/05-integration-examples/gradio_integration.py
-
-# Docker部署
-python examples/05-integration-examples/docker_integration.py
 ```
 
 ### 6. 故障排除
@@ -180,9 +180,6 @@ python examples/06-troubleshooting/diagnostic_tools.py
 
 # 性能调试
 python examples/06-troubleshooting/performance_debugger.py
-
-# 内存分析
-python examples/06-troubleshooting/memory_analyzer.py
 ```
 
 ### 3. 学习路径
@@ -305,125 +302,26 @@ python examples/06-troubleshooting/memory_analyzer.py
 
 ## 🤝 贡献指南
 
-我们欢迎所有形式的贡献！无论是代码改进、文档完善、问题报告还是功能建议。
-
-### 🔧 贡献类型
-
-#### 📝 文档贡献
-- 完善现有文档的内容和格式
-- 添加新的学习资料和教程
-- 翻译文档到其他语言
-- 修正文档中的错误和不准确之处
-
-#### 💻 代码贡献
-- 改进现有示例代码的质量
-- 添加新的示例和用例
-- 优化性能测试工具
-- 修复bug和问题
-
-#### 🧪 测试贡献
-- 添加新的测试用例
-- 改进测试覆盖率
-- 性能基准测试
-- 兼容性测试
-
-#### 🎨 用户体验
-- 改进项目结构和组织
-- 优化学习路径设计
-- 提升工具易用性
-- 界面和交互改进
+我们欢迎所有形式的贡献！
 
 ### 📋 贡献流程
 
-1. **Fork 项目** - 在GitHub上fork本项目到你的账户
-2. **创建分支** - 为你的贡献创建一个新的特性分支
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **开发和测试** - 进行开发并确保代码质量
-   ```bash
-   # 运行测试
-   python examples/06-troubleshooting/diagnostic_tools.py
-   # 检查代码质量
-   python examples/03-setup-scripts/check_system.py
-   ```
-4. **提交更改** - 使用清晰的提交信息
-   ```bash
-   git commit -m 'Add: 新增某某功能的示例代码'
-   ```
-5. **推送分支** - 推送到你的fork仓库
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-6. **创建PR** - 在GitHub上创建Pull Request
-
-### ✅ 贡献标准
-
-#### 代码质量
-- 遵循现有的代码风格和约定
-- 添加必要的注释和文档字符串
-- 确保代码可以正常运行
-- 包含适当的错误处理
-
-#### 文档要求
-- 使用清晰、准确的中文表达
-- 包含必要的代码示例
-- 提供使用说明和注意事项
-- 保持格式一致性
-
-#### 测试要求
-- 新功能需要包含测试用例
-- 确保所有测试通过
-- 性能相关的改动需要基准测试
-- 提供测试结果和分析
-
-### 🏷️ 提交信息规范
-
-使用以下前缀来标识提交类型：
-- `Add:` 新增功能或文件
-- `Update:` 更新现有功能
-- `Fix:` 修复bug或问题
-- `Docs:` 文档相关更改
-- `Test:` 测试相关更改
-- `Refactor:` 代码重构
-- `Style:` 代码格式调整
-
+1. Fork 项目到你的账户
+2. 创建新的特性分支
+3. 进行开发并测试
+4. 提交更改并推送
+5. 创建Pull Request
 ## 📄 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+本项目采用 MIT 许可证开源发布。
 
 ## 🙏 致谢
 
-### 🌟 核心项目
-- [nano-vllm](https://github.com/ardeshir/nano-vllm) - 本项目学习的核心对象，轻量级高性能推理引擎
-- [vLLM](https://github.com/vllm-project/vllm) - 重要的参考实现和技术灵感来源
-- [Transformers](https://github.com/huggingface/transformers) - 模型加载和处理的基础库
-
-### 🛠️ 技术栈
-- [PyTorch](https://pytorch.org/) - 深度学习框架和张量计算
-- [CUDA](https://developer.nvidia.com/cuda-zone) - GPU加速计算支持
-- [FastAPI](https://fastapi.tiangolo.com/) - 高性能Web框架
-- [Gradio](https://gradio.app/) - 快速构建机器学习界面
-- [Docker](https://www.docker.com/) - 容器化部署解决方案
-- [Kubernetes](https://kubernetes.io/) - 容器编排和管理
-
-### 👥 社区支持
-- PyTorch 社区 - 提供技术支持和最佳实践
-- Hugging Face 社区 - 模型和工具生态系统
-- NVIDIA 开发者社区 - GPU优化和CUDA编程指导
-- 开源社区贡献者 - 代码改进和问题反馈
-
-### 📚 学习资源
-- [Attention Is All You Need](https://arxiv.org/abs/1706.03762) - Transformer架构原理
-- [FlashAttention](https://arxiv.org/abs/2205.14135) - 注意力机制优化
-- [vLLM Paper](https://arxiv.org/abs/2309.06180) - 高效推理系统设计
-- [Tensor Parallelism](https://arxiv.org/abs/1909.08053) - 分布式推理技术
-
-### 🎯 特别感谢
-感谢所有为开源AI推理技术发展做出贡献的研究者、开发者和社区成员。正是因为你们的无私分享和持续创新，才让我们能够站在巨人的肩膀上，深入学习和理解这些前沿技术。
+感谢以下项目和社区的支持：
+- [nano-vllm](https://github.com/ardeshir/nano-vllm) - 核心学习对象
+- [vLLM](https://github.com/vllm-project/vllm) - 技术参考
+- [PyTorch](https://pytorch.org/) 和 [Transformers](https://github.com/huggingface/transformers) - 基础框架
 
 ---
 
-**让我们一起推动AI推理技术的发展！** 🚀
-
-*如果这个项目对你有帮助，请考虑给我们一个 ⭐ Star，这将是对我们最大的鼓励！*
+*如果这个项目对你有帮助，请考虑给我们一个 ⭐ Star！*
