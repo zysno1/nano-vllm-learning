@@ -44,6 +44,14 @@
 ### 🛠️ 第二步：实践应用 (Practice)  
 > **目标**：通过动手实践加深理解
 
+#### 🎯 交互式学习路径 (推荐)
+> **Jupyter Notebooks** - 边学边练，即时反馈
+
+- [**📖 00_环境设置和快速开始**](./notebooks/00_环境设置和快速开始.ipynb) - 搭建环境，理解基础概念
+- [**📖 01_基础推理和批处理**](./notebooks/01_基础推理和批处理.ipynb) - 掌握tokenization、推理和批处理
+- [**📖 02_高级调度和内存管理**](./notebooks/02_高级调度和内存管理.ipynb) - 智能调度和内存优化
+- [**📖 03_完整推理流程和端到端系统**](./notebooks/03_完整推理流程和端到端系统.ipynb) - 构建完整推理系统
+
 #### 核心架构实践
 - [**系统架构**](./docs/02-architecture/) - 整体设计思路、核心组件、数据流程
 - [**核心组件**](./docs/02-architecture/core-components.md) - 关键模块分析
@@ -70,10 +78,9 @@
 > **目标**：系统掌握高级技术，具备实际应用能力
 
 #### 高级技术掌握
-- [**分布式推理**](./docs/04-advanced-topics/distributed-inference.md) - 多GPU并行技术
-- [**内存优化**](./docs/04-advanced-topics/memory-optimization.md) - 高级内存优化
-- [**性能调优**](./docs/04-advanced-topics/performance-tuning.md) - 系统性能优化
-- [**生产部署**](./docs/04-advanced-topics/deployment-strategies.md) - 生产环境最佳实践
+- [**架构分析**](./docs/02-architecture/) - 系统架构深度解析
+- [**代码分析**](./docs/03-code-analysis/) - 核心代码实现分析
+- [**高级示例**](./examples/advanced/) - 进阶实践项目
 
 #### 综合实践项目
 - [**实践任务**](./docs/practice_tasks.md) - 分级实践项目，综合应用所学知识
@@ -98,14 +105,69 @@ cd nano-vllm-learning
 pip install -r requirements.txt
 
 # 运行基础示例
-python examples/basic/quickstart.py
+python examples/basic/00-quick-start/hello_vllm.py
 ```
 
 #### 核心概念学习
-1. **理解阶段** → 阅读 [核心概念](./docs/concepts.md)
-2. **实践阶段** → 运行 [基础示例](./examples/basic/)
+1. **理解阶段** → 阅读 [基础概念文档](./docs/01-basic-concepts/)
+2. **实践阶段** → 运行 [基础示例](./examples/basic/) 或 [交互式Notebooks](./notebooks/)
 3. **简化阶段** → 完成 [自我评估](./docs/self_assessment.md)
 4. **整理阶段** → 挑战 [实践任务](./docs/practice_tasks.md)
+
+#### 🚀 两种学习方式
+
+##### 📖 交互式学习 (推荐新手)
+```bash
+# 启动Jupyter Notebook
+jupyter notebook notebooks/
+
+# 或使用Google Colab
+# 直接在浏览器中打开notebooks目录下的.ipynb文件
+```
+
+##### 💻 代码实践学习
+```bash
+# 运行基础示例
+python examples/basic/00-quick-start/hello_vllm.py
+```
+
+---
+
+## 📖 交互式学习路径详解
+
+### 🎯 Jupyter Notebooks 学习指南
+
+我们提供了完整的交互式学习路径，通过 Jupyter Notebooks 让你边学边练，获得即时反馈：
+
+#### 📚 学习路径规划
+
+| Notebook | 学习目标 | 难度 | 预计时间 | 适合人群 |
+|----------|----------|------|----------|----------|
+| [**00_环境设置和快速开始**](./notebooks/00_环境设置和快速开始.ipynb) | 环境搭建，基础概念 | ⭐ | 30-45分钟 | 初学者 |
+| [**01_基础推理和批处理**](./notebooks/01_基础推理和批处理.ipynb) | Tokenization，推理引擎 | ⭐⭐ | 60-90分钟 | 有Python基础 |
+| [**02_高级调度和内存管理**](./notebooks/02_高级调度和内存管理.ipynb) | 智能调度，内存优化 | ⭐⭐⭐ | 90-120分钟 | 有系统设计经验 |
+| [**03_完整推理流程和端到端系统**](./notebooks/03_完整推理流程和端到端系统.ipynb) | 端到端系统构建 | ⭐⭐⭐⭐ | 120-150分钟 | 高级开发者 |
+
+#### 🚀 快速开始 Notebooks
+
+```bash
+# 方式1: 本地运行
+git clone https://github.com/your-repo/nano-vllm-learning.git
+cd nano-vllm-learning
+pip install -r requirements.txt
+jupyter notebook notebooks/
+
+# 方式2: Google Colab (推荐)
+# 直接在浏览器中打开任意 .ipynb 文件
+# 点击 "Open in Colab" 按钮即可开始学习
+```
+
+#### 💡 学习建议
+
+- **循序渐进**：按照编号顺序学习，每个notebook都基于前面的知识
+- **动手实践**：不要只看代码，一定要运行每个代码单元格
+- **参数实验**：尝试修改参数，观察结果变化
+- **笔记记录**：在notebook中添加你的理解和思考
 
 ---
 
@@ -153,8 +215,7 @@ python examples/basic/quickstart.py
 
 ### 🆘 获得帮助
 - [**常见问题**](./docs/faq.md) - 学习过程中的常见问题解答
-- [**故障排除**](./docs/troubleshooting.md) - 技术问题诊断和解决
-- [**社区讨论**](./docs/community.md) - 加入学习交流社区
+- [**自我评估**](./docs/self_assessment.md) - 检验学习效果
 
 ---
 
