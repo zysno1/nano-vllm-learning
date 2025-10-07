@@ -67,53 +67,21 @@ docs/
 ```
 examples/
 ├── README.md                    # 示例总览和使用指南
-├── 01-basic-usage/            # 基础使用示例
-│   ├── README.md              # 基础使用指南
-│   ├── simple_inference.py    # 简单推理示例
-│   ├── batch_inference.py     # 批量推理示例
-│   ├── streaming_inference.py # 流式推理示例
-│   ├── model_loading.py       # 模型加载示例
-│   └── configuration.py       # 配置管理示例
-├── 02-performance-testing/    # 性能测试工具
-│   ├── README.md              # 性能测试指南
-│   ├── benchmark.py           # 综合基准测试
-│   ├── latency_test.py        # 延迟测试
-│   ├── throughput_test.py     # 吞吐量测试
-│   ├── memory_profiling.py    # 内存分析
-│   ├── stress_test.py         # 压力测试
-│   └── comparison_test.py     # 对比测试
-├── 03-setup-scripts/          # 环境配置脚本
-│   ├── README.md              # 环境配置指南
-│   ├── setup_environment.py   # 环境自动配置
-│   ├── install_dependencies.py # 依赖安装脚本
-│   └── check_system.py        # 系统检查工具
-├── 04-advanced-examples/      # 高级应用示例
-│   ├── README.md              # 高级示例指南
-│   ├── production_server.py   # 生产级服务器
-│   ├── async_processing.py    # 异步处理示例
-│   ├── dynamic_batching.py    # 动态批处理
-│   ├── memory_optimization.py # 内存优化技术
-│   ├── custom_sampling.py     # 自定义采样策略
-│   ├── multi_model_serving.py # 多模型服务
-│   └── streaming_chat.py      # 流式对话系统
-├── 05-integration-examples/   # 集成示例
-│   ├── README.md              # 集成指南
-│   ├── fastapi_integration.py # FastAPI集成
-│   ├── flask_integration.py   # Flask集成
-│   ├── gradio_integration.py  # Gradio界面集成
-│   ├── streamlit_integration.py # Streamlit集成
-│   ├── langchain_integration.py # LangChain集成
-│   ├── docker_integration.py  # Docker容器化
-│   ├── kubernetes_integration.py # Kubernetes部署
-│   └── cloud_deployment.py    # 云平台部署
-└── 06-troubleshooting/        # 故障排除工具
-    ├── README.md              # 故障排除指南
-    ├── diagnostic_tools.py    # 系统诊断工具
-    ├── common_issues.py       # 常见问题解决
-    ├── performance_debugger.py # 性能调试器
-    ├── memory_analyzer.py     # 内存分析器
-    ├── log_analyzer.py        # 日志分析工具
-    └── fix_validator.py       # 修复验证工具
+├── 00-quick-start/             # 🚀 快速开始示例
+│   ├── README.md               # 快速开始指南
+│   ├── environment_check.py    # 环境检查和配置验证
+│   ├── hello_vllm.py          # 第一个推理示例
+│   └── basic_concepts.py       # 核心概念演示
+├── 01-basic-usage/             # 📚 基础使用示例
+│   ├── README.md               # 基础使用指南
+│   ├── simple_inference.py     # 简单推理示例
+│   └── batch_inference.py      # 批量推理示例
+├── 02-step-by-step-tutorials/  # 📝 分步骤教程
+│   ├── README.md               # 教程指南
+│   └── tutorial_01_first_inference.py # 第一个推理教程
+└── 03-code-templates/          # 🛠️ 代码模板
+    ├── README.md               # 模板使用指南
+    └── basic_inference_template.py # 基础推理模板
 ```
 
 
