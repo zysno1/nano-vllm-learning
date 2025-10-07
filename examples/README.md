@@ -1,23 +1,108 @@
-# nano-vLLM 示例代码中心
+# 📚 学习示例
 
-欢迎来到 nano-vLLM 示例代码中心！这里包含了从入门到进阶的完整代码示例，帮助您通过实践掌握 vLLM 的使用。
+> 基于费曼学习法重新组织的学习示例，从基础认知到实践应用，循序渐进
 
-## 🎯 示例特色
+## 🎯 学习目标
 
-- **循序渐进**：从简单到复杂的学习路径
-- **详细注释**：每行关键代码都有详细说明
-- **实用性强**：可直接用于实际项目的代码模板
-- **错误处理**：完善的异常处理和调试信息
+通过这些示例，你将：
+- 🔧 掌握 nano-vLLM 的完整使用方法
+- 🧠 深入理解核心技术原理
+- 💡 具备解决实际问题的能力
+- 🚀 能够构建生产级推理服务
+
+---
+
+## 📚 结构化学习路径
+
+### 🌟 基础认知阶段
+**目标**: 建立基本概念，掌握核心使用方法
+
+#### 📁 [basic/](basic/) - 基础示例演练
+```bash
+# 快速体验 (5分钟)
+python basic/00-quick-start/hello_vllm.py
+
+# 基础使用 (15分钟)  
+python basic/01-basic-usage/simple_inference.py
+
+# 核心技术理解 (30分钟)
+cd basic/01_model_loading && python main.py
+cd ../02_llm_engine && python main.py
+cd ../03_paged_attention && python main.py
+```
+
+**学习重点**:
+- ✅ 环境配置和基本使用
+- ✅ 理解 PagedAttention 内存优化
+- ✅ 掌握 LLM 引擎工作原理
+- ✅ 学会基本参数调优
+
+---
+
+### 🚀 实践应用阶段  
+**目标**: 通过复杂场景，深化技术理解
+
+#### 📁 [advanced/](advanced/) - 真实场景进阶案例
+```bash
+# 系统集成 (45分钟)
+cd advanced/04_scheduler && python main.py
+cd ../05_complete_inference && python main.py
+
+# 生产级应用 (60分钟)
+cd ../06_end_to_end_demo
+pip install -r requirements.txt
+python api_server.py  # 启动服务
+python client_examples.py  # 测试客户端
+
+# 高级定制 (30分钟)
+cd ../02-step-by-step-tutorials && python tutorial_01_first_inference.py
+cd ../03-code-templates && python basic_inference_template.py
+```
+
+**学习重点**:
+- ✅ 智能调度策略设计
+- ✅ 完整推理流程优化
+- ✅ 生产级服务构建
+- ✅ 高并发处理机制
+
+---
+
+## 🧪 学习验证
+
+### 快速自测
+1. **基础概念**: 能否解释 PagedAttention 的工作原理？
+2. **系统理解**: 如何设计一个高效的调度策略？
+3. **实践能力**: 能否独立构建推理服务？
+
+### 实践挑战
+```bash
+# 性能对比实验
+python basic/01-basic-usage/batch_inference.py --batch_size 8
+python basic/01-basic-usage/batch_inference.py --batch_size 16
+
+# 压力测试
+cd advanced/06_end_to_end_demo
+python test_nano_vllm.py --stress_test --concurrent_users 50
+```
+
+---
 
 ## 📁 目录结构
 
 ```
 examples/
-├── 00-quick-start/           # 🚀 快速开始示例
-├── 01-basic-usage/           # 📚 基础使用示例
-├── 02-step-by-step-tutorials/ # 📝 分步骤教程
-├── 03-code-templates/        # 🛠️ 代码模板
-└── 04-performance/           # 📊 性能测试示例
+├── basic/                    # 🌟 基础认知阶段
+│   ├── 00-quick-start/       # 🚀 快速开始示例
+│   ├── 01-basic-usage/       # 📚 基础使用示例
+│   ├── 01_model_loading/     # 🔧 模型加载机制
+│   ├── 02_llm_engine/        # ⚙️ LLM引擎核心
+│   └── 03_paged_attention/   # 🧠 PagedAttention技术
+└── advanced/                 # 🚀 实践应用阶段
+    ├── 04_scheduler/          # 📊 智能调度器
+    ├── 05_complete_inference/ # 🔄 完整推理流程
+    ├── 06_end_to_end_demo/    # 🎯 端到端演示
+    ├── 02-step-by-step-tutorials/ # 📝 分步骤教程
+    └── 03-code-templates/     # 🛠️ 代码模板
 ```
 
 ## 🚀 快速开始示例 (00-quick-start)
