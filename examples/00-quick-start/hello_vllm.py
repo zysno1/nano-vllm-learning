@@ -113,7 +113,7 @@ def generate_text_demo(tokenizer, model, device):
             # 编码输入
             inputs = tokenizer.encode(prompt, return_tensors="pt").to(device)
             
-            print("🤔 AI正在思考...")
+            print("🤔 模型推理中，请稍候...")
             start_time = time.time()
             
             # 生成文本
@@ -223,7 +223,7 @@ def print_learning_summary():
     
     print("\n💡 记住：")
     print("   • 学习是一个渐进的过程")
-    print("   • 多动手实践，多思考原理")
+    print("   • 多动手实践，深入理解原理")
     print("   • 遇到问题查看 docs/00-quick-start/faq.md")
     print("=" * 60)
 

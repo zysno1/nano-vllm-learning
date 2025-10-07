@@ -228,8 +228,8 @@ class SimpleInferenceEngine:
                 if not user_input:
                     continue
                 
-                # 生成回复
-                print("🤖 AI正在思考...")
+                # 开始生成过程，展示推理状态
+                print("🤖 开始文本生成...")
                 responses = self.generate_text(
                     user_input,
                     max_length=50,
