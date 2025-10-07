@@ -18,10 +18,10 @@
 #### 方式二：通过链接打开
 点击下面的链接直接在 Colab 中打开：
 
-- 🔗 [00_环境设置和快速开始](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/00_环境设置和快速开始.ipynb)
-- 🔗 [01_基础推理和批处理](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/01_基础推理和批处理.ipynb)
-- 🔗 [02_高级调度和内存管理](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/02_高级调度和内存管理.ipynb)
-- 🔗 [03_完整推理流程和端到端系统](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/03_完整推理流程和端到端系统.ipynb)
+- 🔗 [00_环境设置和快速开始](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/00_环境设置和快速开始.ipynb)
+- 🔗 [01_基础推理和批处理](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/01_基础推理和批处理.ipynb)
+- 🔗 [02_高级调度和内存管理](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/02_高级调度和内存管理.ipynb)
+- 🔗 [03_完整推理流程和端到端系统](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/03_完整推理流程和端到端系统.ipynb)
 
 #### 方式三：上传本地文件
 1. 下载 Notebook 文件到本地
@@ -319,9 +319,9 @@ except Exception as e:
 
 现在你已经掌握了在 Colab 中使用 nano-vLLM Notebooks 的所有技巧！选择一个 Notebook 开始你的学习之旅：
 
-1. 🚀 **初学者**: [00_环境设置和快速开始](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/00_环境设置和快速开始.ipynb)
-2. 🔥 **进阶者**: [02_高级调度和内存管理](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/02_高级调度和内存管理.ipynb)
-3. 🚀 **专家**: [03_完整推理流程和端到端系统](https://colab.research.google.com/github/your-username/nano-vllm-learning/blob/main/notebooks/03_完整推理流程和端到端系统.ipynb)
+1. 🚀 **初学者**: [00_环境设置和快速开始](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/00_环境设置和快速开始.ipynb)
+2. 🔥 **进阶者**: [02_高级调度和内存管理](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/02_高级调度和内存管理.ipynb)
+3. 🚀 **专家**: [03_完整推理流程和端到端系统](https://colab.research.google.com/github/zysno1/nano-vllm-learning/blob/main/notebooks/03_完整推理流程和端到端系统.ipynb)
 
 **Happy Coding in the Cloud! ☁️✨**
 
