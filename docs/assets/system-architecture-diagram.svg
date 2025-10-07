@@ -1,0 +1,189 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="clientGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="apiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D9488;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="processingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EA580C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="resourceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C2D12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A16207;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="hardwareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#374151;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6B7280;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1200" height="800" fill="#F8FAFC"/>
+  
+  <!-- 标题 -->
+  <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">nano-vLLM 系统架构图</text>
+  
+  <!-- 客户端层 -->
+  <rect x="50" y="60" width="1100" height="80" rx="8" fill="url(#clientGradient)" filter="url(#shadow)"/>
+  <text x="600" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">客户端层 (Client Layer)</text>
+  <text x="150" y="110" font-family="Arial, sans-serif" font-size="12" fill="white">Web客户端</text>
+  <text x="350" y="110" font-family="Arial, sans-serif" font-size="12" fill="white">移动应用</text>
+  <text x="550" y="110" font-family="Arial, sans-serif" font-size="12" fill="white">API客户端</text>
+  <text x="750" y="110" font-family="Arial, sans-serif" font-size="12" fill="white">SDK集成</text>
+  <text x="950" y="110" font-family="Arial, sans-serif" font-size="12" fill="white">第三方应用</text>
+  
+  <!-- API网关层 -->
+  <rect x="50" y="160" width="1100" height="100" rx="8" fill="url(#apiGradient)" filter="url(#shadow)"/>
+  <text x="600" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">API网关层 (API Gateway)</text>
+  
+  <!-- HTTP服务器 -->
+  <rect x="100" y="200" width="150" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="175" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">HTTP Server</text>
+  
+  <!-- gRPC服务器 -->
+  <rect x="300" y="200" width="150" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="375" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">gRPC Server</text>
+  
+  <!-- WebSocket服务器 -->
+  <rect x="500" y="200" width="150" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="575" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">WebSocket</text>
+  
+  <!-- 限流器 -->
+  <rect x="700" y="200" width="120" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="760" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Rate Limiter</text>
+  
+  <!-- 验证器 -->
+  <rect x="870" y="200" width="120" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="930" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Validator</text>
+  
+  <!-- 请求处理层 -->
+  <rect x="50" y="280" width="1100" height="140" rx="8" fill="url(#processingGradient)" filter="url(#shadow)"/>
+  <text x="600" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">请求处理层 (Request Processing Layer)</text>
+  
+  <!-- 请求调度器 -->
+  <rect x="100" y="320" width="300" height="80" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="250" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">请求调度器</text>
+  <text x="130" y="360" font-family="Arial, sans-serif" font-size="10" fill="white">• 优先级队列</text>
+  <text x="130" y="375" font-family="Arial, sans-serif" font-size="10" fill="white">• 动态批处理</text>
+  <text x="130" y="390" font-family="Arial, sans-serif" font-size="10" fill="white">• 负载均衡</text>
+  
+  <!-- 推理引擎 -->
+  <rect x="450" y="320" width="300" height="80" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="600" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">推理引擎</text>
+  <text x="480" y="360" font-family="Arial, sans-serif" font-size="10" fill="white">• 模型执行</text>
+  <text x="480" y="375" font-family="Arial, sans-serif" font-size="10" fill="white">• 注意力优化</text>
+  <text x="480" y="390" font-family="Arial, sans-serif" font-size="10" fill="white">• 并行计算</text>
+  
+  <!-- 生成控制器 -->
+  <rect x="800" y="320" width="250" height="80" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="925" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">生成控制器</text>
+  <text x="830" y="360" font-family="Arial, sans-serif" font-size="10" fill="white">• 采样策略</text>
+  <text x="830" y="375" font-family="Arial, sans-serif" font-size="10" fill="white">• 停止条件</text>
+  <text x="830" y="390" font-family="Arial, sans-serif" font-size="10" fill="white">• 流式输出</text>
+  
+  <!-- 资源管理层 -->
+  <rect x="50" y="440" width="1100" height="120" rx="8" fill="url(#resourceGradient)" filter="url(#shadow)"/>
+  <text x="600" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">资源管理层 (Resource Management Layer)</text>
+  
+  <!-- 内存管理器 -->
+  <rect x="100" y="480" width="200" height="60" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="200" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">内存管理器</text>
+  <text x="120" y="520" font-family="Arial, sans-serif" font-size="10" fill="white">• KV Cache</text>
+  <text x="120" y="535" font-family="Arial, sans-serif" font-size="10" fill="white">• 内存池</text>
+  
+  <!-- 模型管理器 -->
+  <rect x="350" y="480" width="200" height="60" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="450" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">模型管理器</text>
+  <text x="370" y="520" font-family="Arial, sans-serif" font-size="10" fill="white">• 模型加载</text>
+  <text x="370" y="535" font-family="Arial, sans-serif" font-size="10" fill="white">• 权重管理</text>
+  
+  <!-- 缓存管理器 -->
+  <rect x="600" y="480" width="200" height="60" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="700" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">缓存管理器</text>
+  <text x="620" y="520" font-family="Arial, sans-serif" font-size="10" fill="white">• 结果缓存</text>
+  <text x="620" y="535" font-family="Arial, sans-serif" font-size="10" fill="white">• 预计算</text>
+  
+  <!-- 监控管理器 -->
+  <rect x="850" y="480" width="200" height="60" rx="6" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1"/>
+  <text x="950" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">监控管理器</text>
+  <text x="870" y="520" font-family="Arial, sans-serif" font-size="10" fill="white">• 性能监控</text>
+  <text x="870" y="535" font-family="Arial, sans-serif" font-size="10" fill="white">• 资源统计</text>
+  
+  <!-- 硬件层 -->
+  <rect x="50" y="580" width="1100" height="100" rx="8" fill="url(#hardwareGradient)" filter="url(#shadow)"/>
+  <text x="600" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">硬件层 (Hardware Layer)</text>
+  
+  <!-- GPU计算 -->
+  <rect x="150" y="620" width="200" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="250" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">GPU 计算单元</text>
+  
+  <!-- CPU计算 -->
+  <rect x="400" y="620" width="200" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="500" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">CPU 计算单元</text>
+  
+  <!-- 内存系统 -->
+  <rect x="650" y="620" width="200" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="750" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">内存系统</text>
+  
+  <!-- 存储系统 -->
+  <rect x="900" y="620" width="150" height="40" rx="4" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1"/>
+  <text x="975" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">存储系统</text>
+  
+  <!-- 数据流箭头 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1E293B" />
+    </marker>
+  </defs>
+  
+  <!-- 垂直数据流 -->
+  <line x1="600" y1="140" x2="600" y2="160" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="260" x2="600" y2="280" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="420" x2="600" y2="440" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="560" x2="600" y2="580" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- 水平数据流 -->
+  <line x1="250" y1="360" x2="450" y2="360" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="750" y1="360" x2="800" y2="360" stroke="#1E293B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- 性能指标框 -->
+  <rect x="50" y="700" width="1100" height="80" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="600" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E293B">核心性能指标</text>
+  
+  <!-- 性能指标 -->
+  <g transform="translate(100, 730)">
+    <circle cx="10" cy="10" r="8" fill="#10B981"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">吞吐量: 1000+ req/s</text>
+  </g>
+  
+  <g transform="translate(300, 730)">
+    <circle cx="10" cy="10" r="8" fill="#3B82F6"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">延迟: &lt;100ms P99</text>
+  </g>
+  
+  <g transform="translate(500, 730)">
+    <circle cx="10" cy="10" r="8" fill="#F59E0B"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">GPU利用率: 95%+</text>
+  </g>
+  
+  <g transform="translate(700, 730)">
+    <circle cx="10" cy="10" r="8" fill="#EF4444"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">内存效率: 90%+</text>
+  </g>
+  
+  <g transform="translate(900, 730)">
+    <circle cx="10" cy="10" r="8" fill="#8B5CF6"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">可扩展性: 线性</text>
+  </g>
+  
+  <!-- 版权信息 -->
+  <text x="1150" y="790" text-anchor="end" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">nano-vLLM Architecture v1.0</text>
+</svg>

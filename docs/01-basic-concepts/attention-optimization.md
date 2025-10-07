@@ -1,5 +1,19 @@
 # 注意力机制优化
 
+## 🎯 学习目标
+
+通过本章学习，你将能够：
+- 理解传统注意力机制的计算瓶颈
+- 掌握 PagedAttention 的核心原理
+- 了解注意力优化的实现细节
+- 学会分析注意力计算的性能特征
+
+## 📊 PagedAttention 技术概览
+
+![PagedAttention 可视化](../assets/paged-attention-visualization.svg)
+
+*上图展示了 PagedAttention 与传统注意力机制的对比，包括内存管理、性能指标和技术优势*
+
 ## 🎯 注意力机制在推理中的挑战
 
 在大语言模型的推理过程中，注意力机制是计算和内存消耗的主要瓶颈：

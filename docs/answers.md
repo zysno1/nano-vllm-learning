@@ -52,6 +52,9 @@ PagedAttention 内存分配:
 **标准答案**：
 Continuous Batching 通过**动态批次管理**实现吞吐量的显著提升：
 
+![Continuous Batching 可视化](assets/continuous-batching-visualization.svg)
+*图：Continuous Batching vs 静态批处理性能对比 - 展示动态调度、内存管理和负载均衡的优势*
+
 #### 📈 工作机制
 ```python
 # 传统静态批处理
@@ -119,6 +122,9 @@ Req6:                     [█████████████████�
 
 **标准答案**：
 调度策略的选择需要根据**业务场景和性能目标**进行权衡：
+
+![智能调度策略可视化](assets/intelligent-scheduling-visualization.svg)
+*图：智能调度策略架构 - 展示动态调度、资源分配优化和实时性能监控*
 
 #### 📋 调度策略对比表
 

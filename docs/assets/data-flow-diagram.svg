@@ -1,0 +1,257 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flowGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#EF4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DC2626;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1E293B" />
+    </marker>
+    <marker id="arrowheadBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3B82F6" />
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1400" height="900" fill="#F8FAFC"/>
+  
+  <!-- 标题 -->
+  <text x="700" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">nano-vLLM 数据流程图</text>
+  
+  <!-- 时间轴 -->
+  <line x1="100" y1="80" x2="1300" y2="80" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="100" y="75" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">时间轴</text>
+  
+  <!-- 阶段1: 请求接收 -->
+  <g transform="translate(100, 120)">
+    <rect x="0" y="0" width="200" height="120" rx="8" fill="url(#flowGradient1)" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">阶段1: 请求接收</text>
+    <text x="20" y="45" font-family="Arial, sans-serif" font-size="11" fill="white">• 客户端请求到达</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="white">• 协议解析</text>
+    <text x="20" y="75" font-family="Arial, sans-serif" font-size="11" fill="white">• 基础验证</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="11" fill="white">• 请求ID生成</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">~1ms</text>
+  </g>
+  
+  <!-- 阶段2: 请求验证 -->
+  <g transform="translate(350, 120)">
+    <rect x="0" y="0" width="200" height="120" rx="8" fill="url(#flowGradient2)" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">阶段2: 请求验证</text>
+    <text x="20" y="45" font-family="Arial, sans-serif" font-size="11" fill="white">• 参数验证</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="white">• 权限检查</text>
+    <text x="20" y="75" font-family="Arial, sans-serif" font-size="11" fill="white">• 限流控制</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="11" fill="white">• 令牌化</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">~2ms</text>
+  </g>
+  
+  <!-- 阶段3: 队列管理 -->
+  <g transform="translate(600, 120)">
+    <rect x="0" y="0" width="200" height="120" rx="8" fill="url(#flowGradient3)" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">阶段3: 队列管理</text>
+    <text x="20" y="45" font-family="Arial, sans-serif" font-size="11" fill="white">• 优先级计算</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="white">• 队列入队</text>
+    <text x="20" y="75" font-family="Arial, sans-serif" font-size="11" fill="white">• 批处理决策</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="11" fill="white">• 调度策略</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">~5ms</text>
+  </g>
+  
+  <!-- 阶段4: 资源分配 -->
+  <g transform="translate(850, 120)">
+    <rect x="0" y="0" width="200" height="120" rx="8" fill="url(#flowGradient4)" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">阶段4: 资源分配</text>
+    <text x="20" y="45" font-family="Arial, sans-serif" font-size="11" fill="white">• 内存分配</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="white">• KV Cache准备</text>
+    <text x="20" y="75" font-family="Arial, sans-serif" font-size="11" fill="white">• GPU资源锁定</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="11" fill="white">• 并行上下文</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">~3ms</text>
+  </g>
+  
+  <!-- 阶段5: 推理执行 -->
+  <g transform="translate(1100, 120)">
+    <rect x="0" y="0" width="200" height="120" rx="8" fill="url(#flowGradient5)" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">阶段5: 推理执行</text>
+    <text x="20" y="45" font-family="Arial, sans-serif" font-size="11" fill="white">• 模型前向推理</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="white">• 注意力计算</text>
+    <text x="20" y="75" font-family="Arial, sans-serif" font-size="11" fill="white">• 文本生成</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="11" fill="white">• 采样解码</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">~80ms</text>
+  </g>
+  
+  <!-- 流程箭头 -->
+  <line x1="300" y1="180" x2="350" y2="180" stroke="#1E293B" stroke-width="3" marker-end="url(#arrowhead)"/>
+  <line x1="550" y1="180" x2="600" y2="180" stroke="#1E293B" stroke-width="3" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="180" x2="850" y2="180" stroke="#1E293B" stroke-width="3" marker-end="url(#arrowhead)"/>
+  <line x1="1050" y1="180" x2="1100" y2="180" stroke="#1E293B" stroke-width="3" marker-end="url(#arrowhead)"/>
+  
+  <!-- 详细数据流 -->
+  <text x="700" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">详细数据流转过程</text>
+  
+  <!-- 数据流组件 -->
+  <g transform="translate(100, 320)">
+    <!-- 请求队列 -->
+    <rect x="0" y="0" width="150" height="80" rx="6" fill="#E0E7FF" stroke="#3B82F6" stroke-width="2"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">请求队列</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">高优先级: 5</text>
+    <text x="10" y="60" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">中优先级: 12</text>
+    <text x="10" y="75" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">低优先级: 8</text>
+  </g>
+  
+  <g transform="translate(300, 320)">
+    <!-- 批处理器 -->
+    <rect x="0" y="0" width="150" height="80" rx="6" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">批处理器</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">批大小: 16</text>
+    <text x="10" y="60" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">等待时间: 5ms</text>
+    <text x="10" y="75" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">利用率: 94%</text>
+  </g>
+  
+  <g transform="translate(500, 320)">
+    <!-- 内存管理 -->
+    <rect x="0" y="0" width="150" height="80" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">内存管理</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">KV Cache: 8GB</text>
+    <text x="10" y="60" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">激活值: 2GB</text>
+    <text x="10" y="75" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">碎片率: 3%</text>
+  </g>
+  
+  <g transform="translate(700, 320)">
+    <!-- GPU计算 -->
+    <rect x="0" y="0" width="150" height="80" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">GPU计算</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">利用率: 96%</text>
+    <text x="10" y="60" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">FLOPS: 312T</text>
+    <text x="10" y="75" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">温度: 78°C</text>
+  </g>
+  
+  <g transform="translate(900, 320)">
+    <!-- 结果处理 -->
+    <rect x="0" y="0" width="150" height="80" rx="6" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="2"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">结果处理</text>
+    <text x="10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">解码速度: 50 tok/s</text>
+    <text x="10" y="60" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">格式化: JSON</text>
+    <text x="10" y="75" font-family="Arial, sans-serif" font-size="10" fill="#1E293B">压缩率: 15%</text>
+  </g>
+  
+  <!-- 数据流箭头 -->
+  <line x1="250" y1="360" x2="300" y2="360" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  <line x1="450" y1="360" x2="500" y2="360" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  <line x1="650" y1="360" x2="700" y2="360" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  <line x1="850" y1="360" x2="900" y2="360" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  
+  <!-- 性能监控仪表板 -->
+  <rect x="100" y="450" width="1200" height="200" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="700" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1E293B">实时性能监控仪表板</text>
+  
+  <!-- 吞吐量图表 -->
+  <g transform="translate(150, 500)">
+    <rect x="0" y="0" width="200" height="120" rx="4" fill="white" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">吞吐量 (req/s)</text>
+    
+    <!-- 简化的折线图 -->
+    <polyline points="20,100 40,85 60,90 80,75 100,70 120,65 140,60 160,55 180,50" 
+              fill="none" stroke="#10B981" stroke-width="2"/>
+    <circle cx="180" cy="50" r="3" fill="#10B981"/>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">当前: 1,247 req/s</text>
+  </g>
+  
+  <!-- 延迟分布 -->
+  <g transform="translate(400, 500)">
+    <rect x="0" y="0" width="200" height="120" rx="4" fill="white" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">延迟分布 (ms)</text>
+    
+    <!-- 简化的柱状图 -->
+    <rect x="30" y="80" width="15" height="20" fill="#3B82F6"/>
+    <rect x="50" y="60" width="15" height="40" fill="#3B82F6"/>
+    <rect x="70" y="40" width="15" height="60" fill="#3B82F6"/>
+    <rect x="90" y="50" width="15" height="50" fill="#3B82F6"/>
+    <rect x="110" y="70" width="15" height="30" fill="#3B82F6"/>
+    <rect x="130" y="85" width="15" height="15" fill="#3B82F6"/>
+    <rect x="150" y="90" width="15" height="10" fill="#3B82F6"/>
+    
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">P99: 89ms</text>
+  </g>
+  
+  <!-- 资源利用率 -->
+  <g transform="translate(650, 500)">
+    <rect x="0" y="0" width="200" height="120" rx="4" fill="white" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">资源利用率 (%)</text>
+    
+    <!-- GPU利用率环形图 -->
+    <circle cx="60" cy="65" r="25" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+    <circle cx="60" cy="65" r="25" fill="none" stroke="#10B981" stroke-width="4" 
+            stroke-dasharray="150" stroke-dashoffset="6" transform="rotate(-90 60 65)"/>
+    <text x="60" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1E293B">GPU 96%</text>
+    
+    <!-- 内存利用率环形图 -->
+    <circle cx="140" cy="65" r="25" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+    <circle cx="140" cy="65" r="25" fill="none" stroke="#F59E0B" stroke-width="4" 
+            stroke-dasharray="150" stroke-dashoffset="15" transform="rotate(-90 140 65)"/>
+    <text x="140" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1E293B">MEM 90%</text>
+  </g>
+  
+  <!-- 错误率监控 -->
+  <g transform="translate(900, 500)">
+    <rect x="0" y="0" width="200" height="120" rx="4" fill="white" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">错误率监控</text>
+    
+    <!-- 成功率饼图 -->
+    <circle cx="100" cy="65" r="30" fill="#10B981"/>
+    <path d="M 100 35 A 30 30 0 0 1 125 50 L 100 65 Z" fill="#EF4444"/>
+    
+    <text x="100" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">99.7%</text>
+    <text x="100" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">成功率</text>
+  </g>
+  
+  <!-- 数据流量统计 -->
+  <rect x="100" y="680" width="1200" height="80" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1"/>
+  <text x="700" y="705" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1E293B">数据流量统计</text>
+  
+  <g transform="translate(200, 720)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">输入数据: 1.2GB/s</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">输出数据: 800MB/s</text>
+  </g>
+  
+  <g transform="translate(450, 720)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">缓存命中率: 87%</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">内存带宽: 1.5TB/s</text>
+  </g>
+  
+  <g transform="translate(700, 720)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">网络延迟: 2.3ms</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">并发连接: 2,048</text>
+  </g>
+  
+  <g transform="translate(950, 720)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">队列深度: 156</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">平均等待: 4.2ms</text>
+  </g>
+  
+  <!-- 版权信息 -->
+  <text x="1350" y="890" text-anchor="end" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">nano-vLLM Data Flow v1.0</text>
+</svg>

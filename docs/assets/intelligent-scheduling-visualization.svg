@@ -1,0 +1,486 @@
+<svg viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="highPriorityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mediumPriorityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F39C12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E67E22;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lowPriorityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#27AE60;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2ECC71;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <pattern id="processingPattern" patternUnits="userSpaceOnUse" width="8" height="8">
+      <rect width="8" height="8" fill="#3498DB"/>
+      <circle cx="4" cy="4" r="2" fill="#2980B9"/>
+    </pattern>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">
+    智能调度系统 (Intelligent Scheduling)
+  </text>
+  
+  <!-- 请求队列部分 -->
+  <g id="request-queue">
+    <text x="150" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#34495E">
+      请求队列
+    </text>
+    
+    <!-- 高优先级队列 -->
+    <g id="high-priority-queue">
+      <rect x="50" y="100" width="200" height="50" fill="url(#highPriorityGradient)" stroke="#C0392B" stroke-width="2" rx="5" filter="url(#shadow)"/>
+      <text x="150" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">
+        高优先级队列
+      </text>
+      <text x="150" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
+        实时推理 | 交互式对话
+      </text>
+      
+      <!-- 请求项 -->
+      <rect x="60" y="110" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="72" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C" font-weight="bold">R1</text>
+      
+      <rect x="90" y="110" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="102" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C" font-weight="bold">R2</text>
+      
+      <rect x="120" y="110" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="132" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C" font-weight="bold">R3</text>
+    </g>
+    
+    <!-- 中优先级队列 -->
+    <g id="medium-priority-queue">
+      <rect x="50" y="170" width="200" height="50" fill="url(#mediumPriorityGradient)" stroke="#E67E22" stroke-width="2" rx="5" filter="url(#shadow)"/>
+      <text x="150" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">
+        中优先级队列
+      </text>
+      <text x="150" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
+        批量处理 | 内容生成
+      </text>
+      
+      <!-- 请求项 -->
+      <rect x="60" y="180" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="72" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#F39C12" font-weight="bold">R4</text>
+      
+      <rect x="90" y="180" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="102" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#F39C12" font-weight="bold">R5</text>
+      
+      <rect x="120" y="180" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="132" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#F39C12" font-weight="bold">R6</text>
+      
+      <rect x="150" y="180" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="162" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#F39C12" font-weight="bold">R7</text>
+      
+      <rect x="180" y="180" width="25" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="192" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#F39C12" font-weight="bold">R8</text>
+    </g>
+    
+    <!-- 低优先级队列 -->
+    <g id="low-priority-queue">
+      <rect x="50" y="240" width="200" height="50" fill="url(#lowPriorityGradient)" stroke="#27AE60" stroke-width="2" rx="5" filter="url(#shadow)"/>
+      <text x="150" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">
+        低优先级队列
+      </text>
+      <text x="150" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
+        后台任务 | 数据分析
+      </text>
+      
+      <!-- 请求项 -->
+      <rect x="60" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="70" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R9</text>
+      
+      <rect x="85" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="95" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R10</text>
+      
+      <rect x="110" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="120" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R11</text>
+      
+      <rect x="135" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="145" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R12</text>
+      
+      <rect x="160" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="170" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R13</text>
+      
+      <rect x="185" y="250" width="20" height="15" fill="#FFFFFF" opacity="0.9"/>
+      <text x="195" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27AE60" font-weight="bold">R14</text>
+    </g>
+  </g>
+  
+  <!-- 调度器部分 -->
+  <g id="scheduler">
+    <rect x="320" y="120" width="160" height="150" fill="#ECF0F1" stroke="#BDC3C7" stroke-width="2" rx="10" filter="url(#shadow)"/>
+    <text x="400" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">
+      智能调度器
+    </text>
+    
+    <!-- 调度算法 -->
+    <g id="scheduling-algorithms">
+      <rect x="330" y="160" width="140" height="25" fill="#3498DB" opacity="0.8" rx="3"/>
+      <text x="400" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">
+        优先级调度算法
+      </text>
+      
+      <rect x="330" y="190" width="140" height="25" fill="#9B59B6" opacity="0.8" rx="3"/>
+      <text x="400" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">
+        负载均衡策略
+      </text>
+      
+      <rect x="330" y="220" width="140" height="25" fill="#1ABC9C" opacity="0.8" rx="3"/>
+      <text x="400" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">
+        资源预测模型
+      </text>
+      
+      <rect x="330" y="250" width="140" height="15" fill="url(#processingPattern)" rx="3"/>
+    </g>
+  </g>
+  
+  <!-- 资源分配部分 -->
+  <g id="resource-allocation">
+    <text x="700" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#34495E">
+      动态资源分配
+    </text>
+    
+    <!-- GPU资源池 -->
+    <g id="gpu-pool">
+      <rect x="550" y="100" width="300" height="80" fill="#E8F5E8" stroke="#27AE60" stroke-width="2" rx="8"/>
+      <text x="700" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">
+        GPU资源池
+      </text>
+      
+      <!-- GPU单元 -->
+      <rect x="570" y="135" width="50" height="35" fill="#27AE60" stroke="#1E8449" stroke-width="1" rx="3"/>
+      <text x="595" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">GPU 0</text>
+      <text x="595" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">95%</text>
+      
+      <rect x="630" y="135" width="50" height="35" fill="#F39C12" stroke="#D68910" stroke-width="1" rx="3"/>
+      <text x="655" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">GPU 1</text>
+      <text x="655" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">78%</text>
+      
+      <rect x="690" y="135" width="50" height="35" fill="#3498DB" stroke="#2980B9" stroke-width="1" rx="3"/>
+      <text x="715" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">GPU 2</text>
+      <text x="715" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">62%</text>
+      
+      <rect x="750" y="135" width="50" height="35" fill="#95A5A6" stroke="#7F8C8D" stroke-width="1" rx="3"/>
+      <text x="775" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">GPU 3</text>
+      <text x="775" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">35%</text>
+    </g>
+    
+    <!-- 内存资源池 -->
+    <g id="memory-pool">
+      <rect x="550" y="200" width="300" height="80" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" rx="8"/>
+      <text x="700" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">
+        内存资源池
+      </text>
+      
+      <!-- 内存块 -->
+      <rect x="570" y="235" width="60" height="35" fill="#FF9800" stroke="#F57C00" stroke-width="1" rx="3"/>
+      <text x="600" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white" font-weight="bold">KV Cache</text>
+      <text x="600" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">12GB/16GB</text>
+      
+      <rect x="640" y="235" width="60" height="35" fill="#E67E22" stroke="#D35400" stroke-width="1" rx="3"/>
+      <text x="670" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white" font-weight="bold">Model</text>
+      <text x="670" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">8GB/16GB</text>
+      
+      <rect x="710" y="235" width="60" height="35" fill="#95A5A6" stroke="#7F8C8D" stroke-width="1" rx="3"/>
+      <text x="740" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white" font-weight="bold">Buffer</text>
+      <text x="740" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">2GB/8GB</text>
+      
+      <rect x="780" y="235" width="60" height="35" fill="#BDC3C7" stroke="#95A5A6" stroke-width="1" rx="3"/>
+      <text x="810" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#34495E" font-weight="bold">Free</text>
+      <text x="810" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#34495E">10GB</text>
+    </g>
+  </g>
+  
+  <!-- 调度流程箭头 -->
+  <g id="scheduling-flow">
+    <!-- 从队列到调度器 -->
+    <path d="M 270 175 L 300 175" stroke="#3498DB" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="285" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#3498DB" font-weight="bold">
+      请求
+    </text>
+    
+    <!-- 从调度器到资源 -->
+    <path d="M 500 195 L 530 195" stroke="#27AE60" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="515" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#27AE60" font-weight="bold">
+      分配
+    </text>
+  </g>
+  
+  <!-- 调度策略详解 -->
+  <g id="scheduling-strategies">
+    <rect x="100" y="320" width="1000" height="200" fill="#F8F9FA" stroke="#DEE2E6" stroke-width="1" rx="10" filter="url(#shadow)"/>
+    <text x="600" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">
+      智能调度策略
+    </text>
+    
+    <!-- 策略1：优先级调度 -->
+    <g id="priority-scheduling">
+      <rect x="120" y="370" width="200" height="120" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" rx="8"/>
+      <text x="220" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2">
+        优先级调度
+      </text>
+      
+      <text x="130" y="415" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 实时请求优先处理
+      </text>
+      <text x="130" y="430" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • SLA保证机制
+      </text>
+      <text x="130" y="445" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 动态优先级调整
+      </text>
+      <text x="130" y="460" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 饥饿避免算法
+      </text>
+      <text x="130" y="475" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 延迟敏感度分析
+      </text>
+    </g>
+    
+    <!-- 策略2：负载均衡 -->
+    <g id="load-balancing">
+      <rect x="340" y="370" width="200" height="120" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2" rx="8"/>
+      <text x="440" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#388E3C">
+        负载均衡
+      </text>
+      
+      <text x="350" y="415" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • GPU利用率均衡
+      </text>
+      <text x="350" y="430" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 内存碎片最小化
+      </text>
+      <text x="350" y="445" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 热点避免策略
+      </text>
+      <text x="350" y="460" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 动态迁移机制
+      </text>
+      <text x="350" y="475" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 资源预留策略
+      </text>
+    </g>
+    
+    <!-- 策略3：预测调度 -->
+    <g id="predictive-scheduling">
+      <rect x="560" y="370" width="200" height="120" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" rx="8"/>
+      <text x="660" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#F57C00">
+        预测调度
+      </text>
+      
+      <text x="570" y="415" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 请求模式学习
+      </text>
+      <text x="570" y="430" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 资源需求预测
+      </text>
+      <text x="570" y="445" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 提前资源分配
+      </text>
+      <text x="570" y="460" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 缓存预热策略
+      </text>
+      <text x="570" y="475" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 自适应批次大小
+      </text>
+    </g>
+    
+    <!-- 策略4：容错调度 -->
+    <g id="fault-tolerant-scheduling">
+      <rect x="780" y="370" width="200" height="120" fill="#FCE4EC" stroke="#E91E63" stroke-width="2" rx="8"/>
+      <text x="880" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#C2185B">
+        容错调度
+      </text>
+      
+      <text x="790" y="415" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 故障检测机制
+      </text>
+      <text x="790" y="430" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 自动重试策略
+      </text>
+      <text x="790" y="445" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 降级服务模式
+      </text>
+      <text x="790" y="460" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 资源隔离保护
+      </text>
+      <text x="790" y="475" font-family="Arial, sans-serif" font-size="11" fill="#34495E">
+        • 快速恢复机制
+      </text>
+    </g>
+  </g>
+  
+  <!-- 性能监控仪表板 -->
+  <g id="performance-dashboard">
+    <rect x="200" y="550" width="800" height="400" fill="#FAFBFC" stroke="#E1E4E8" stroke-width="1" rx="10"/>
+    <text x="600" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50">
+      实时性能监控仪表板
+    </text>
+    
+    <!-- 吞吐量图表 -->
+    <g id="throughput-chart">
+      <rect x="220" y="600" width="250" height="150" fill="#E8F5E8" stroke="#27AE60" stroke-width="1" rx="5"/>
+      <text x="345" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">
+        吞吐量 (req/s)
+      </text>
+      
+      <!-- 折线图 -->
+      <polyline points="230,720 250,700 270,680 290,660 310,640 330,650 350,630 370,620 390,610 410,600 430,590 450,580"
+                stroke="#27AE60" stroke-width="3" fill="none"/>
+      
+      <!-- 数据点 -->
+      <circle cx="450" cy="580" r="4" fill="#27AE60"/>
+      <text x="460" y="585" font-family="Arial, sans-serif" font-size="12" fill="#27AE60" font-weight="bold">42.3</text>
+      
+      <!-- Y轴标签 -->
+      <text x="225" y="610" font-family="Arial, sans-serif" font-size="10" fill="#34495E">50</text>
+      <text x="225" y="640" font-family="Arial, sans-serif" font-size="10" fill="#34495E">40</text>
+      <text x="225" y="670" font-family="Arial, sans-serif" font-size="10" fill="#34495E">30</text>
+      <text x="225" y="700" font-family="Arial, sans-serif" font-size="10" fill="#34495E">20</text>
+      <text x="225" y="730" font-family="Arial, sans-serif" font-size="10" fill="#34495E">10</text>
+    </g>
+    
+    <!-- 延迟分布图 -->
+    <g id="latency-chart">
+      <rect x="490" y="600" width="250" height="150" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="5"/>
+      <text x="615" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">
+        延迟分布 (ms)
+      </text>
+      
+      <!-- 柱状图 -->
+      <rect x="510" y="680" width="20" height="60" fill="#FF9800" opacity="0.8"/>
+      <rect x="535" y="660" width="20" height="80" fill="#FF9800" opacity="0.8"/>
+      <rect x="560" y="640" width="20" height="100" fill="#FF9800" opacity="0.8"/>
+      <rect x="585" y="650" width="20" height="90" fill="#FF9800" opacity="0.8"/>
+      <rect x="610" y="670" width="20" height="70" fill="#FF9800" opacity="0.8"/>
+      <rect x="635" y="690" width="20" height="50" fill="#FF9800" opacity="0.8"/>
+      <rect x="660" y="710" width="20" height="30" fill="#FF9800" opacity="0.8"/>
+      <rect x="685" y="720" width="20" height="20" fill="#FF9800" opacity="0.8"/>
+      
+      <!-- X轴标签 -->
+      <text x="520" y="760" font-family="Arial, sans-serif" font-size="9" fill="#34495E">0-50</text>
+      <text x="545" y="760" font-family="Arial, sans-serif" font-size="9" fill="#34495E">50-100</text>
+      <text x="570" y="760" font-family="Arial, sans-serif" font-size="9" fill="#34495E">100-150</text>
+      <text x="595" y="760" font-family="Arial, sans-serif" font-size="9" fill="#34495E">150-200</text>
+    </g>
+    
+    <!-- 资源利用率仪表 -->
+    <g id="resource-gauge">
+      <rect x="760" y="600" width="220" height="150" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="5"/>
+      <text x="870" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">
+        资源利用率
+      </text>
+      
+      <!-- GPU利用率环形图 -->
+      <circle cx="820" cy="680" r="35" fill="none" stroke="#E0E0E0" stroke-width="8"/>
+      <circle cx="820" cy="680" r="35" fill="none" stroke="#2196F3" stroke-width="8" 
+              stroke-dasharray="164.93" stroke-dashoffset="32.99" transform="rotate(-90 820 680)"/>
+      <text x="820" y="685" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#2196F3" font-weight="bold">
+        80%
+      </text>
+      <text x="820" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#34495E">
+        GPU
+      </text>
+      
+      <!-- 内存利用率环形图 -->
+      <circle cx="920" cy="680" r="35" fill="none" stroke="#E0E0E0" stroke-width="8"/>
+      <circle cx="920" cy="680" r="35" fill="none" stroke="#FF9800" stroke-width="8" 
+              stroke-dasharray="153.94" stroke-dashoffset="43.98" transform="rotate(-90 920 680)"/>
+      <text x="920" y="685" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#FF9800" font-weight="bold">
+        70%
+      </text>
+      <text x="920" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#34495E">
+        Memory
+      </text>
+    </g>
+    
+    <!-- 关键指标 -->
+    <g id="key-metrics">
+      <rect x="220" y="770" width="760" height="160" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="1" rx="5"/>
+      <text x="600" y="795" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">
+        关键性能指标 (KPI)
+      </text>
+      
+      <!-- 指标网格 -->
+      <g id="metrics-grid">
+        <!-- 第一行 -->
+        <rect x="240" y="810" width="120" height="50" fill="#E8F5E8" stroke="#27AE60" stroke-width="1" rx="3"/>
+        <text x="300" y="830" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#27AE60" font-weight="bold">
+          平均吞吐量
+        </text>
+        <text x="300" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#27AE60" font-weight="bold">
+          42.3 req/s
+        </text>
+        
+        <rect x="380" y="810" width="120" height="50" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="3"/>
+        <text x="440" y="830" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FF9800" font-weight="bold">
+          P95延迟
+        </text>
+        <text x="440" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#FF9800" font-weight="bold">
+          125ms
+        </text>
+        
+        <rect x="520" y="810" width="120" height="50" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="3"/>
+        <text x="580" y="830" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2196F3" font-weight="bold">
+          GPU利用率
+        </text>
+        <text x="580" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2196F3" font-weight="bold">
+          87.2%
+        </text>
+        
+        <rect x="660" y="810" width="120" height="50" fill="#FCE4EC" stroke="#E91E63" stroke-width="1" rx="3"/>
+        <text x="720" y="830" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#E91E63" font-weight="bold">
+          错误率
+        </text>
+        <text x="720" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#E91E63" font-weight="bold">
+          0.02%
+        </text>
+        
+        <rect x="800" y="810" width="120" height="50" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="3"/>
+        <text x="860" y="830" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#9C27B0" font-weight="bold">
+          队列长度
+        </text>
+        <text x="860" y="845" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9C27B0" font-weight="bold">
+          23
+        </text>
+        
+        <!-- 第二行 -->
+        <rect x="310" y="870" width="120" height="50" fill="#E0F2F1" stroke="#009688" stroke-width="1" rx="3"/>
+        <text x="370" y="890" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#009688" font-weight="bold">
+          内存效率
+        </text>
+        <text x="370" y="905" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#009688" font-weight="bold">
+          91.5%
+        </text>
+        
+        <rect x="450" y="870" width="120" height="50" fill="#FFF8E1" stroke="#FFC107" stroke-width="1" rx="3"/>
+        <text x="510" y="890" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFC107" font-weight="bold">
+          缓存命中率
+        </text>
+        <text x="510" y="905" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#FFC107" font-weight="bold">
+          94.7%
+        </text>
+        
+        <rect x="590" y="870" width="120" height="50" fill="#F1F8E9" stroke="#8BC34A" stroke-width="1" rx="3"/>
+        <text x="650" y="890" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#8BC34A" font-weight="bold">
+          SLA达成率
+        </text>
+        <text x="650" y="905" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8BC34A" font-weight="bold">
+          99.8%
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 箭头标记定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3498DB"/>
+    </marker>
+  </defs>
+</svg>

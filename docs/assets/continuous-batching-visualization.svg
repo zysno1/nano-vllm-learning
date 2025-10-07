@@ -1,0 +1,375 @@
+<svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="staticGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dynamicGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#27AE60;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2ECC71;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <pattern id="waitPattern" patternUnits="userSpaceOnUse" width="4" height="4">
+      <rect width="4" height="4" fill="#F39C12"/>
+      <rect width="2" height="2" fill="#E67E22"/>
+    </pattern>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">
+    Continuous Batching vs 静态批处理
+  </text>
+  
+  <!-- 静态批处理部分 -->
+  <g id="static-batching">
+    <text x="300" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#E74C3C">
+      静态批处理 (Static Batching)
+    </text>
+    
+    <!-- 时间轴 -->
+    <g id="static-timeline">
+      <line x1="50" y1="120" x2="550" y2="120" stroke="#34495E" stroke-width="2"/>
+      <text x="50" y="110" font-family="Arial, sans-serif" font-size="12" fill="#34495E">时间</text>
+      
+      <!-- 批次1 -->
+      <g id="batch1-static">
+        <rect x="60" y="140" width="120" height="40" fill="url(#staticGradient)" stroke="#C0392B" stroke-width="2" rx="5"/>
+        <text x="120" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">
+          Batch 1 (4 requests)
+        </text>
+        
+        <!-- 请求详情 -->
+        <rect x="65" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="77" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R1</text>
+        
+        <rect x="95" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="107" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R2</text>
+        
+        <rect x="125" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="137" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R3</text>
+        
+        <rect x="155" y="145" width="20" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="165" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R4</text>
+      </g>
+      
+      <!-- 等待时间 -->
+      <rect x="180" y="140" width="80" height="40" fill="url(#waitPattern)" stroke="#F39C12" stroke-width="2" rx="5"/>
+      <text x="220" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#D35400" font-weight="bold">
+        等待下一批
+      </text>
+      
+      <!-- 批次2 -->
+      <g id="batch2-static">
+        <rect x="270" y="140" width="120" height="40" fill="url(#staticGradient)" stroke="#C0392B" stroke-width="2" rx="5"/>
+        <text x="330" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">
+          Batch 2 (3 requests)
+        </text>
+        
+        <!-- 请求详情 -->
+        <rect x="275" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="287" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R5</text>
+        
+        <rect x="305" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="317" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R6</text>
+        
+        <rect x="335" y="145" width="25" height="10" fill="#FFFFFF" opacity="0.8"/>
+        <text x="347" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#E74C3C">R7</text>
+        
+        <!-- 空闲GPU -->
+        <rect x="365" y="145" width="20" height="10" fill="#95A5A6" opacity="0.6"/>
+        <text x="375" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#7F8C8D">空闲</text>
+      </g>
+      
+      <!-- 等待时间2 -->
+      <rect x="390" y="140" width="80" height="40" fill="url(#waitPattern)" stroke="#F39C12" stroke-width="2" rx="5"/>
+      <text x="430" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#D35400" font-weight="bold">
+        等待下一批
+      </text>
+    </g>
+    
+    <!-- 性能指标 -->
+    <g id="static-metrics">
+      <rect x="50" y="200" width="500" height="120" fill="#FADBD8" stroke="#E74C3C" stroke-width="1" rx="5"/>
+      <text x="300" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">
+        静态批处理性能
+      </text>
+      
+      <!-- GPU利用率 -->
+      <text x="70" y="250" font-family="Arial, sans-serif" font-size="14" fill="#34495E">GPU利用率:</text>
+      <rect x="180" y="235" width="200" height="20" fill="#E8E8E8" rx="10"/>
+      <rect x="180" y="235" width="120" height="20" fill="#E74C3C" rx="10"/>
+      <text x="390" y="248" font-family="Arial, sans-serif" font-size="12" fill="#E74C3C" font-weight="bold">60%</text>
+      
+      <!-- 平均延迟 -->
+      <text x="70" y="275" font-family="Arial, sans-serif" font-size="14" fill="#34495E">平均延迟:</text>
+      <text x="390" y="275" font-family="Arial, sans-serif" font-size="14" fill="#E74C3C" font-weight="bold">2.8s</text>
+      
+      <!-- 吞吐量 -->
+      <text x="70" y="300" font-family="Arial, sans-serif" font-size="14" fill="#34495E">吞吐量:</text>
+      <text x="390" y="300" font-family="Arial, sans-serif" font-size="14" fill="#E74C3C" font-weight="bold">12 req/s</text>
+    </g>
+  </g>
+  
+  <!-- Continuous Batching部分 -->
+  <g id="continuous-batching">
+    <text x="900" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#27AE60">
+      Continuous Batching
+    </text>
+    
+    <!-- 动态时间轴 -->
+    <g id="dynamic-timeline">
+      <line x1="650" y1="120" x2="1150" y2="120" stroke="#34495E" stroke-width="2"/>
+      <text x="650" y="110" font-family="Arial, sans-serif" font-size="12" fill="#34495E">时间</text>
+      
+      <!-- 连续处理流 -->
+      <g id="continuous-flow">
+        <!-- 第一个时间段 -->
+        <rect x="660" y="140" width="100" height="40" fill="url(#dynamicGradient)" stroke="#27AE60" stroke-width="2" rx="5"/>
+        <text x="710" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">
+          动态批次 1
+        </text>
+        
+        <!-- 请求流入流出 -->
+        <g id="request-flow-1">
+          <rect x="665" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="675" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R1</text>
+          
+          <rect x="690" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="700" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R2</text>
+          
+          <rect x="715" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="725" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R3</text>
+          
+          <rect x="740" y="145" width="15" height="8" fill="#F1C40F" opacity="0.9"/>
+          <text x="747" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#D68910">+R4</text>
+        </g>
+        
+        <!-- 第二个时间段 -->
+        <rect x="770" y="140" width="100" height="40" fill="url(#dynamicGradient)" stroke="#27AE60" stroke-width="2" rx="5"/>
+        <text x="820" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">
+          动态批次 2
+        </text>
+        
+        <g id="request-flow-2">
+          <rect x="775" y="145" width="15" height="8" fill="#E8F5E8" opacity="0.9"/>
+          <text x="782" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">-R1</text>
+          
+          <rect x="795" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="805" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R2</text>
+          
+          <rect x="820" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="830" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R3</text>
+          
+          <rect x="845" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="855" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R4</text>
+        </g>
+        
+        <!-- 第三个时间段 -->
+        <rect x="880" y="140" width="100" height="40" fill="url(#dynamicGradient)" stroke="#27AE60" stroke-width="2" rx="5"/>
+        <text x="930" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">
+          动态批次 3
+        </text>
+        
+        <g id="request-flow-3">
+          <rect x="885" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="895" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R2</text>
+          
+          <rect x="910" y="145" width="15" height="8" fill="#E8F5E8" opacity="0.9"/>
+          <text x="917" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">-R3</text>
+          
+          <rect x="930" y="145" width="20" height="8" fill="#FFFFFF" opacity="0.9"/>
+          <text x="940" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#27AE60">R4</text>
+          
+          <rect x="955" y="145" width="20" height="8" fill="#F1C40F" opacity="0.9"/>
+          <text x="965" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#D68910">+R5</text>
+        </g>
+        
+        <!-- 连续箭头 -->
+        <path d="M 760 160 L 770 160" stroke="#3498DB" stroke-width="2" fill="none" marker-end="url(#smallArrow)"/>
+        <path d="M 870 160 L 880 160" stroke="#3498DB" stroke-width="2" fill="none" marker-end="url(#smallArrow)"/>
+      </g>
+    </g>
+    
+    <!-- 性能指标 -->
+    <g id="dynamic-metrics">
+      <rect x="650" y="200" width="500" height="120" fill="#D5EFDB" stroke="#27AE60" stroke-width="1" rx="5"/>
+      <text x="900" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">
+        Continuous Batching性能
+      </text>
+      
+      <!-- GPU利用率 -->
+      <text x="670" y="250" font-family="Arial, sans-serif" font-size="14" fill="#34495E">GPU利用率:</text>
+      <rect x="780" y="235" width="200" height="20" fill="#E8E8E8" rx="10"/>
+      <rect x="780" y="235" width="184" height="20" fill="#27AE60" rx="10"/>
+      <text x="990" y="248" font-family="Arial, sans-serif" font-size="12" fill="#27AE60" font-weight="bold">92%</text>
+      
+      <!-- 平均延迟 -->
+      <text x="670" y="275" font-family="Arial, sans-serif" font-size="14" fill="#34495E">平均延迟:</text>
+      <text x="990" y="275" font-family="Arial, sans-serif" font-size="14" fill="#27AE60" font-weight="bold">1.2s</text>
+      
+      <!-- 吞吐量 -->
+      <text x="670" y="300" font-family="Arial, sans-serif" font-size="14" fill="#34495E">吞吐量:</text>
+      <text x="990" y="300" font-family="Arial, sans-serif" font-size="14" fill="#27AE60" font-weight="bold">28 req/s</text>
+    </g>
+  </g>
+  
+  <!-- 对比箭头 -->
+  <g id="comparison-arrow">
+    <path d="M 570 240 L 630 240" stroke="#3498DB" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="600" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#3498DB" font-weight="bold">
+      优化
+    </text>
+  </g>
+  
+  <!-- 核心机制说明 -->
+  <g id="mechanism-explanation">
+    <rect x="100" y="350" width="1000" height="200" fill="#F8F9FA" stroke="#DEE2E6" stroke-width="1" rx="10" filter="url(#shadow)"/>
+    <text x="600" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">
+      Continuous Batching 核心机制
+    </text>
+    
+    <!-- 机制说明 -->
+    <g id="mechanism-details">
+      <!-- 动态调度 -->
+      <g id="dynamic-scheduling">
+        <rect x="120" y="400" width="250" height="120" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" rx="8"/>
+        <text x="245" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1976D2">
+          动态调度
+        </text>
+        
+        <text x="130" y="450" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 请求完成后立即移除
+        </text>
+        <text x="130" y="470" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 新请求实时加入批次
+        </text>
+        <text x="130" y="490" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 无需等待整批完成
+        </text>
+        <text x="130" y="510" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • GPU资源持续利用
+        </text>
+      </g>
+      
+      <!-- 内存管理 -->
+      <g id="memory-management">
+        <rect x="390" y="400" width="250" height="120" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2" rx="8"/>
+        <text x="515" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#388E3C">
+          智能内存管理
+        </text>
+        
+        <text x="400" y="450" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • KV Cache动态分配
+        </text>
+        <text x="400" y="470" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 内存碎片最小化
+        </text>
+        <text x="400" y="490" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 支持变长序列
+        </text>
+        <text x="400" y="510" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 内存利用率最大化
+        </text>
+      </g>
+      
+      <!-- 负载均衡 -->
+      <g id="load-balancing">
+        <rect x="660" y="400" width="250" height="120" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" rx="8"/>
+        <text x="785" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F57C00">
+          负载均衡
+        </text>
+        
+        <text x="670" y="450" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 批次大小自适应
+        </text>
+        <text x="670" y="470" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 计算资源均匀分配
+        </text>
+        <text x="670" y="490" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 避免资源闲置
+        </text>
+        <text x="670" y="510" font-family="Arial, sans-serif" font-size="12" fill="#34495E">
+          • 延迟抖动最小化
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 性能对比图表 -->
+  <g id="performance-comparison">
+    <rect x="200" y="580" width="800" height="280" fill="#FAFBFC" stroke="#E1E4E8" stroke-width="1" rx="10"/>
+    <text x="600" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50">
+      性能对比分析
+    </text>
+    
+    <!-- 图表坐标轴 -->
+    <g id="chart-axes">
+      <line x1="250" y1="630" x2="250" y2="820" stroke="#34495E" stroke-width="2"/>
+      <line x1="250" y1="820" x2="950" y2="820" stroke="#34495E" stroke-width="2"/>
+      
+      <!-- Y轴标签 -->
+      <text x="240" y="635" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#34495E">100%</text>
+      <text x="240" y="680" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#34495E">75%</text>
+      <text x="240" y="725" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#34495E">50%</text>
+      <text x="240" y="770" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#34495E">25%</text>
+      <text x="240" y="815" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#34495E">0%</text>
+      
+      <!-- X轴标签 -->
+      <text x="350" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#34495E">GPU利用率</text>
+      <text x="500" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#34495E">吞吐量</text>
+      <text x="650" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#34495E">延迟优化</text>
+      <text x="800" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#34495E">内存效率</text>
+    </g>
+    
+    <!-- 静态批处理柱状图 -->
+    <g id="static-bars">
+      <rect x="320" y="748" width="30" height="72" fill="#E74C3C" opacity="0.8"/>
+      <text x="335" y="765" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">60%</text>
+      
+      <rect x="470" y="766" width="30" height="54" fill="#E74C3C" opacity="0.8"/>
+      <text x="485" y="783" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">43%</text>
+      
+      <rect x="620" y="784" width="30" height="36" fill="#E74C3C" opacity="0.8"/>
+      <text x="635" y="801" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">29%</text>
+      
+      <rect x="770" y="766" width="30" height="54" fill="#E74C3C" opacity="0.8"/>
+      <text x="785" y="783" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">43%</text>
+    </g>
+    
+    <!-- Continuous Batching柱状图 -->
+    <g id="continuous-bars">
+      <rect x="360" y="645" width="30" height="175" fill="#27AE60" opacity="0.8"/>
+      <text x="375" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">92%</text>
+      
+      <rect x="510" y="658" width="30" height="162" fill="#27AE60" opacity="0.8"/>
+      <text x="525" y="678" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">85%</text>
+      
+      <rect x="660" y="676" width="30" height="144" fill="#27AE60" opacity="0.8"/>
+      <text x="675" y="696" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">76%</text>
+      
+      <rect x="810" y="649" width="30" height="171" fill="#27AE60" opacity="0.8"/>
+      <text x="825" y="669" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">90%</text>
+    </g>
+    
+    <!-- 图例 -->
+    <g id="chart-legend">
+      <rect x="720" y="640" width="15" height="15" fill="#E74C3C"/>
+      <text x="745" y="652" font-family="Arial, sans-serif" font-size="12" fill="#2C3E50">静态批处理</text>
+      
+      <rect x="720" y="665" width="15" height="15" fill="#27AE60"/>
+      <text x="745" y="677" font-family="Arial, sans-serif" font-size="12" fill="#2C3E50">Continuous Batching</text>
+    </g>
+  </g>
+  
+  <!-- 箭头标记定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3498DB"/>
+    </marker>
+    <marker id="smallArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3498DB"/>
+    </marker>
+  </defs>
+</svg>

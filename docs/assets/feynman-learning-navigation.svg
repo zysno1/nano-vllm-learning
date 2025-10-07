@@ -1,0 +1,296 @@
+<svg viewBox="0 0 1400 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 渐变定义 -->
+    <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="understandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="practiceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#43e97b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38f9d7;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="simplifyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="organizeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8edea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fed6e3;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 阴影滤镜 -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- 发光效果 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1400" height="1000" fill="#f8fafc"/>
+  
+  <!-- 标题区域 -->
+  <rect x="0" y="0" width="1400" height="80" fill="url(#headerGradient)"/>
+  <text x="700" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold" font-family="Arial, sans-serif">
+    nano-vLLM 费曼学习法导航图
+  </text>
+  <text x="700" y="60" text-anchor="middle" fill="white" font-size="16" font-family="Arial, sans-serif">
+    Feynman Learning Method Navigation Map
+  </text>
+
+  <!-- 费曼学习法核心理念 -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="1300" height="60" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#dropShadow)"/>
+    <text x="650" y="25" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold" font-family="Arial, sans-serif">
+      "如果你不能简单地解释它，说明你理解得还不够深入" - 费曼
+    </text>
+    <text x="650" y="45" text-anchor="middle" fill="#4a5568" font-size="14" font-family="Arial, sans-serif">
+      通过"理解→实践→简化→整理"四个阶段，系统掌握 nano-vLLM 核心技术
+    </text>
+  </g>
+
+  <!-- 第一步：概念理解 (Understand) -->
+  <g transform="translate(50, 200)">
+    <rect x="0" y="0" width="300" height="180" rx="15" fill="url(#understandGradient)" filter="url(#dropShadow)"/>
+    <circle cx="150" cy="30" r="20" fill="white" opacity="0.9"/>
+    <text x="150" y="37" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold">1</text>
+    
+    <text x="150" y="60" text-anchor="middle" fill="white" font-size="20" font-weight="bold" font-family="Arial, sans-serif">
+      🧠 概念理解
+    </text>
+    <text x="150" y="80" text-anchor="middle" fill="white" font-size="14" font-family="Arial, sans-serif">
+      Understand
+    </text>
+    
+    <!-- 学习内容 -->
+    <text x="20" y="105" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">核心概念:</text>
+    <text x="20" y="125" fill="white" font-size="11" font-family="Arial, sans-serif">• 推理引擎基础</text>
+    <text x="20" y="140" fill="white" font-size="11" font-family="Arial, sans-serif">• PagedAttention机制</text>
+    <text x="20" y="155" fill="white" font-size="11" font-family="Arial, sans-serif">• 内存管理策略</text>
+    <text x="20" y="170" fill="white" font-size="11" font-family="Arial, sans-serif">• 张量并行技术</text>
+  </g>
+
+  <!-- 第二步：实践应用 (Practice) -->
+  <g transform="translate(400, 200)">
+    <rect x="0" y="0" width="300" height="180" rx="15" fill="url(#practiceGradient)" filter="url(#dropShadow)"/>
+    <circle cx="150" cy="30" r="20" fill="white" opacity="0.9"/>
+    <text x="150" y="37" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold">2</text>
+    
+    <text x="150" y="60" text-anchor="middle" fill="white" font-size="20" font-weight="bold" font-family="Arial, sans-serif">
+      🛠️ 实践应用
+    </text>
+    <text x="150" y="80" text-anchor="middle" fill="white" font-size="14" font-family="Arial, sans-serif">
+      Practice
+    </text>
+    
+    <!-- 实践内容 -->
+    <text x="20" y="105" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">动手实践:</text>
+    <text x="20" y="125" fill="white" font-size="11" font-family="Arial, sans-serif">• 基础示例演练</text>
+    <text x="20" y="140" fill="white" font-size="11" font-family="Arial, sans-serif">• 系统架构分析</text>
+    <text x="20" y="155" fill="white" font-size="11" font-family="Arial, sans-serif">• 核心组件实现</text>
+    <text x="20" y="170" fill="white" font-size="11" font-family="Arial, sans-serif">• 端到端演示</text>
+  </g>
+
+  <!-- 第三步：回顾简化 (Simplify) -->
+  <g transform="translate(750, 200)">
+    <rect x="0" y="0" width="300" height="180" rx="15" fill="url(#simplifyGradient)" filter="url(#dropShadow)"/>
+    <circle cx="150" cy="30" r="20" fill="white" opacity="0.9"/>
+    <text x="150" y="37" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold">3</text>
+    
+    <text x="150" y="60" text-anchor="middle" fill="white" font-size="20" font-weight="bold" font-family="Arial, sans-serif">
+      🔍 回顾简化
+    </text>
+    <text x="150" y="80" text-anchor="middle" fill="white" font-size="14" font-family="Arial, sans-serif">
+      Simplify
+    </text>
+    
+    <!-- 简化内容 -->
+    <text x="20" y="105" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">深度分析:</text>
+    <text x="20" y="125" fill="white" font-size="11" font-family="Arial, sans-serif">• 代码深度解析</text>
+    <text x="20" y="140" fill="white" font-size="11" font-family="Arial, sans-serif">• 性能优化技术</text>
+    <text x="20" y="155" fill="white" font-size="11" font-family="Arial, sans-serif">• 自我评估检验</text>
+    <text x="20" y="170" fill="white" font-size="11" font-family="Arial, sans-serif">• 知识盲点发现</text>
+  </g>
+
+  <!-- 第四步：系统整理 (Organize) -->
+  <g transform="translate(1100, 200)">
+    <rect x="0" y="0" width="250" height="180" rx="15" fill="url(#organizeGradient)" filter="url(#dropShadow)"/>
+    <circle cx="125" cy="30" r="20" fill="white" opacity="0.9"/>
+    <text x="125" y="37" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold">4</text>
+    
+    <text x="125" y="60" text-anchor="middle" fill="white" font-size="20" font-weight="bold" font-family="Arial, sans-serif">
+      🎯 系统整理
+    </text>
+    <text x="125" y="80" text-anchor="middle" fill="white" font-size="14" font-family="Arial, sans-serif">
+      Organize
+    </text>
+    
+    <!-- 整理内容 -->
+    <text x="15" y="105" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">高级应用:</text>
+    <text x="15" y="125" fill="white" font-size="11" font-family="Arial, sans-serif">• 分布式推理</text>
+    <text x="15" y="140" fill="white" font-size="11" font-family="Arial, sans-serif">• 生产部署</text>
+    <text x="15" y="155" fill="white" font-size="11" font-family="Arial, sans-serif">• 综合项目</text>
+    <text x="15" y="170" fill="white" font-size="11" font-family="Arial, sans-serif">• 创新优化</text>
+  </g>
+
+  <!-- 连接箭头 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568" />
+    </marker>
+  </defs>
+  
+  <!-- 步骤间连接线 -->
+  <path d="M 350 290 Q 375 290 400 290" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 700 290 Q 725 290 750 290" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 1050 290 Q 1075 290 1100 290" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+
+  <!-- 循环反馈箭头 -->
+  <path d="M 1225 380 Q 1300 450 1300 500 Q 1300 550 700 600 Q 100 600 100 500 Q 100 450 175 380" 
+        stroke="#e53e3e" stroke-width="2" fill="none" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="700" y="620" text-anchor="middle" fill="#e53e3e" font-size="12" font-weight="bold" font-family="Arial, sans-serif">
+    持续循环改进
+  </text>
+
+  <!-- 学习资源区域 -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="1300" height="200" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#dropShadow)"/>
+    <text x="650" y="25" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold" font-family="Arial, sans-serif">
+      📚 学习资源导航
+    </text>
+    
+    <!-- 文档资源 -->
+    <g transform="translate(50, 50)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#f7fafc" stroke="#cbd5e0" stroke-width="1"/>
+      <text x="140" y="20" text-anchor="middle" fill="#2d3748" font-size="14" font-weight="bold" font-family="Arial, sans-serif">
+        📖 核心文档
+      </text>
+      <text x="20" y="40" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 基础概念 (01-basic-concepts/)</text>
+      <text x="20" y="55" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 架构设计 (02-architecture/)</text>
+      <text x="20" y="70" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 代码分析 (03-code-analysis/)</text>
+      <text x="20" y="85" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 高级主题 (04-advanced-topics/)</text>
+      <text x="20" y="100" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 常见问题 (faq.md)</text>
+    </g>
+
+    <!-- 实践示例 -->
+    <g transform="translate(360, 50)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#f0fff4" stroke="#9ae6b4" stroke-width="1"/>
+      <text x="140" y="20" text-anchor="middle" fill="#2d3748" font-size="14" font-weight="bold" font-family="Arial, sans-serif">
+        🚀 实践示例
+      </text>
+      <text x="20" y="40" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 基础示例 (examples/basic/)</text>
+      <text x="20" y="55" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 进阶案例 (examples/advanced/)</text>
+      <text x="20" y="70" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 快速开始 (00-quick-start/)</text>
+      <text x="20" y="85" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 性能对比 (performance_comparison.py)</text>
+      <text x="20" y="100" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 端到端演示 (06_end_to_end_demo/)</text>
+    </g>
+
+    <!-- 验证工具 -->
+    <g transform="translate(670, 50)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#fffaf0" stroke="#fbd38d" stroke-width="1"/>
+      <text x="140" y="20" text-anchor="middle" fill="#2d3748" font-size="14" font-weight="bold" font-family="Arial, sans-serif">
+        ✅ 验证工具
+      </text>
+      <text x="20" y="40" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 自我评估 (self_assessment.md)</text>
+      <text x="20" y="55" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 实践任务 (practice_tasks.md)</text>
+      <text x="20" y="70" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 答案解析 (answers.md)</text>
+      <text x="20" y="85" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 知识检验 (分级测试)</text>
+      <text x="20" y="100" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 项目挑战 (综合应用)</text>
+    </g>
+
+    <!-- 进阶路径 -->
+    <g transform="translate(980, 50)">
+      <rect x="0" y="0" width="270" height="120" rx="10" fill="#f0f4ff" stroke="#a3bffa" stroke-width="1"/>
+      <text x="135" y="20" text-anchor="middle" fill="#2d3748" font-size="14" font-weight="bold" font-family="Arial, sans-serif">
+        🎯 进阶路径
+      </text>
+      <text x="20" y="40" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 初学者路径 (15-20小时)</text>
+      <text x="20" y="55" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 快速上手 (5-8小时)</text>
+      <text x="20" y="70" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 深度学习 (25-30小时)</text>
+      <text x="20" y="85" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 专家级挑战 (研究级)</text>
+      <text x="20" y="100" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">• 生产应用 (实战项目)</text>
+    </g>
+  </g>
+
+  <!-- 学习效果指标 -->
+  <g transform="translate(50, 650)">
+    <rect x="0" y="0" width="1300" height="120" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#dropShadow)"/>
+    <text x="650" y="25" text-anchor="middle" fill="#1a202c" font-size="18" font-weight="bold" font-family="Arial, sans-serif">
+      📊 学习效果评估指标
+    </text>
+    
+    <!-- 理解程度 -->
+    <g transform="translate(80, 40)">
+      <circle cx="40" cy="20" r="15" fill="#4facfe"/>
+      <text x="40" y="26" text-anchor="middle" fill="white" font-size="12" font-weight="bold">理解</text>
+      <text x="40" y="45" text-anchor="middle" fill="#4a5568" font-size="10" font-family="Arial, sans-serif">概念掌握度</text>
+      <rect x="70" y="10" width="120" height="8" rx="4" fill="#e2e8f0"/>
+      <rect x="70" y="10" width="96" height="8" rx="4" fill="#4facfe"/>
+      <text x="200" y="17" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">80%</text>
+    </g>
+
+    <!-- 实践能力 -->
+    <g transform="translate(350, 40)">
+      <circle cx="40" cy="20" r="15" fill="#43e97b"/>
+      <text x="40" y="26" text-anchor="middle" fill="white" font-size="12" font-weight="bold">实践</text>
+      <text x="40" y="45" text-anchor="middle" fill="#4a5568" font-size="10" font-family="Arial, sans-serif">动手能力</text>
+      <rect x="70" y="10" width="120" height="8" rx="4" fill="#e2e8f0"/>
+      <rect x="70" y="10" width="84" height="8" rx="4" fill="#43e97b"/>
+      <text x="200" y="17" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">70%</text>
+    </g>
+
+    <!-- 应用水平 -->
+    <g transform="translate(620, 40)">
+      <circle cx="40" cy="20" r="15" fill="#fa709a"/>
+      <text x="40" y="26" text-anchor="middle" fill="white" font-size="12" font-weight="bold">应用</text>
+      <text x="40" y="45" text-anchor="middle" fill="#4a5568" font-size="10" font-family="Arial, sans-serif">解决问题</text>
+      <rect x="70" y="10" width="120" height="8" rx="4" fill="#e2e8f0"/>
+      <rect x="70" y="10" width="72" height="8" rx="4" fill="#fa709a"/>
+      <text x="200" y="17" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">60%</text>
+    </g>
+
+    <!-- 创新能力 -->
+    <g transform="translate(890, 40)">
+      <circle cx="40" cy="20" r="15" fill="#a8edea"/>
+      <text x="40" y="26" text-anchor="middle" fill="white" font-size="12" font-weight="bold">创新</text>
+      <text x="40" y="45" text-anchor="middle" fill="#4a5568" font-size="10" font-family="Arial, sans-serif">优化改进</text>
+      <rect x="70" y="10" width="120" height="8" rx="4" fill="#e2e8f0"/>
+      <rect x="70" y="10" width="60" height="8" rx="4" fill="#a8edea"/>
+      <text x="200" y="17" fill="#4a5568" font-size="11" font-family="Arial, sans-serif">50%</text>
+    </g>
+  </g>
+
+  <!-- 底部提示 -->
+  <g transform="translate(50, 800)">
+    <rect x="0" y="0" width="1300" height="80" rx="10" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="650" y="25" text-anchor="middle" fill="#2d3748" font-size="16" font-weight="bold" font-family="Arial, sans-serif">
+      💡 费曼学习法核心原则
+    </text>
+    <text x="650" y="45" text-anchor="middle" fill="#4a5568" font-size="12" font-family="Arial, sans-serif">
+      能够用简单的语言向他人清晰解释复杂概念，才是真正的理解
+    </text>
+    <text x="650" y="65" text-anchor="middle" fill="#4a5568" font-size="12" font-family="Arial, sans-serif">
+      通过持续的"学习→实践→简化→整理"循环，不断深化对 nano-vLLM 技术的掌握
+    </text>
+  </g>
+
+  <!-- 版权信息 -->
+  <text x="1350" y="990" text-anchor="end" fill="#a0aec0" font-size="10" font-family="Arial, sans-serif">
+    © 2024 nano-vLLM Learning Project
+  </text>
+</svg>
