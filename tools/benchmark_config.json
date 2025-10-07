@@ -1,0 +1,205 @@
+{
+  "description": "nano-vLLM 性能基准测试配置文件",
+  "version": "1.0.0",
+  "test_scenarios": {
+    "quick": {
+      "description": "快速测试，适用于开发阶段",
+      "attention": {
+        "sequence_lengths": [128, 256, 512],
+        "num_sequences": 20,
+        "use_paged_attention": true,
+        "page_size": 16
+      },
+      "batching": {
+        "num_requests": 50,
+        "batch_size": 8,
+        "use_continuous_batching": true,
+        "request_rate": 5
+      },
+      "memory": {
+        "memory_sizes": [1, 2, 4],
+        "allocation_patterns": ["sequential", "random"],
+        "use_memory_pool": true
+      }
+    },
+    "standard": {
+      "description": "标准测试，适用于性能验证",
+      "attention": {
+        "sequence_lengths": [128, 256, 512, 1024, 2048],
+        "num_sequences": 100,
+        "use_paged_attention": true,
+        "page_size": 16
+      },
+      "batching": {
+        "num_requests": 200,
+        "batch_size": 32,
+        "use_continuous_batching": true,
+        "request_rate": 10
+      },
+      "memory": {
+        "memory_sizes": [1, 2, 4, 8, 16],
+        "allocation_patterns": ["sequential", "random", "mixed"],
+        "use_memory_pool": true
+      },
+      "comprehensive": {
+        "test_duration": 60,
+        "concurrent_users": [1, 5, 10, 20, 50],
+        "request_patterns": ["constant", "burst", "mixed"]
+      }
+    },
+    "stress": {
+      "description": "压力测试，适用于极限性能测试",
+      "attention": {
+        "sequence_lengths": [512, 1024, 2048, 4096, 8192],
+        "num_sequences": 500,
+        "use_paged_attention": true,
+        "page_size": 16
+      },
+      "batching": {
+        "num_requests": 1000,
+        "batch_size": 64,
+        "use_continuous_batching": true,
+        "request_rate": 50
+      },
+      "memory": {
+        "memory_sizes": [4, 8, 16, 32, 64],
+        "allocation_patterns": ["sequential", "random", "mixed", "fragmented"],
+        "use_memory_pool": true
+      },
+      "comprehensive": {
+        "test_duration": 300,
+        "concurrent_users": [10, 25, 50, 100, 200, 500],
+        "request_patterns": ["constant", "burst", "mixed", "spike"]
+      }
+    }
+  },
+  "comparison_configs": {
+    "attention_comparison": {
+      "baseline": {
+        "name": "传统注意力",
+        "config": {
+          "sequence_lengths": [128, 256, 512, 1024],
+          "num_sequences": 100,
+          "use_paged_attention": false,
+          "page_size": 0
+        }
+      },
+      "optimized": {
+        "name": "分页注意力",
+        "config": {
+          "sequence_lengths": [128, 256, 512, 1024],
+          "num_sequences": 100,
+          "use_paged_attention": true,
+          "page_size": 16
+        }
+      }
+    },
+    "batching_comparison": {
+      "baseline": {
+        "name": "静态批处理",
+        "config": {
+          "num_requests": 200,
+          "batch_size": 8,
+          "use_continuous_batching": false,
+          "request_rate": 10
+        }
+      },
+      "optimized": {
+        "name": "连续批处理",
+        "config": {
+          "num_requests": 200,
+          "batch_size": 32,
+          "use_continuous_batching": true,
+          "request_rate": 10
+        }
+      }
+    },
+    "memory_comparison": {
+      "baseline": {
+        "name": "动态内存分配",
+        "config": {
+          "memory_sizes": [1, 2, 4, 8, 16],
+          "allocation_patterns": ["random"],
+          "use_memory_pool": false
+        }
+      },
+      "optimized": {
+        "name": "内存池管理",
+        "config": {
+          "memory_sizes": [1, 2, 4, 8, 16],
+          "allocation_patterns": ["sequential"],
+          "use_memory_pool": true
+        }
+      }
+    }
+  },
+  "performance_targets": {
+    "throughput": {
+      "min_tokens_per_second": 100,
+      "target_tokens_per_second": 500,
+      "excellent_tokens_per_second": 1000
+    },
+    "latency": {
+      "max_p95_latency_ms": 500,
+      "target_p95_latency_ms": 200,
+      "excellent_p95_latency_ms": 100
+    },
+    "memory": {
+      "max_memory_usage_gb": 32,
+      "target_memory_efficiency_percent": 80,
+      "excellent_memory_efficiency_percent": 90
+    },
+    "reliability": {
+      "min_success_rate_percent": 95,
+      "target_success_rate_percent": 99,
+      "max_error_rate_percent": 1
+    }
+  },
+  "hardware_profiles": {
+    "development": {
+      "description": "开发环境配置",
+      "cpu_cores": 4,
+      "memory_gb": 16,
+      "gpu_memory_gb": 8,
+      "expected_performance": {
+        "throughput_multiplier": 0.5,
+        "latency_multiplier": 2.0
+      }
+    },
+    "production": {
+      "description": "生产环境配置",
+      "cpu_cores": 16,
+      "memory_gb": 64,
+      "gpu_memory_gb": 32,
+      "expected_performance": {
+        "throughput_multiplier": 1.0,
+        "latency_multiplier": 1.0
+      }
+    },
+    "high_performance": {
+      "description": "高性能环境配置",
+      "cpu_cores": 32,
+      "memory_gb": 128,
+      "gpu_memory_gb": 80,
+      "expected_performance": {
+        "throughput_multiplier": 2.0,
+        "latency_multiplier": 0.5
+      }
+    }
+  },
+  "output_settings": {
+    "report_format": "json",
+    "include_charts": true,
+    "chart_format": "png",
+    "detailed_logs": true,
+    "export_csv": true
+  },
+  "advanced_settings": {
+    "warmup_requests": 10,
+    "cooldown_time_seconds": 5,
+    "measurement_interval_seconds": 1,
+    "statistical_confidence": 0.95,
+    "outlier_detection": true,
+    "outlier_threshold_std": 2.0
+  }
+}
