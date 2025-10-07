@@ -1,10 +1,10 @@
-# 请求调度器分析
+# 请求调度器 (Request Scheduler) 代码分析
 
 ## 🎯 调度器概览
 
 请求调度器是 nano-vllm 的核心组件之一，负责管理和调度所有推理请求。它决定了哪些请求应该被处理、何时处理以及如何批处理，直接影响系统的吞吐量和延迟性能。
 
-## 🏗️ 核心架构
+## 🏗️ 核心架构与导入
 
 ```python
 import asyncio
@@ -17,171 +17,265 @@ from enum import Enum
 import threading
 from collections import defaultdict, deque
 
-from nano_vllm.sequence import Sequence, SequenceGroup, SequenceStatus
-from nano_vllm.sampling import SamplingParams
-from nano_vllm.memory import MemoryManager, KVCache
-from nano_vllm.config import SchedulerConfig
-from nano_vllm.utils.metrics import SchedulerMetrics
+# nano-vllm 核心模块导入
+from nano_vllm.sequence import Sequence, SequenceGroup, SequenceStatus  # 序列管理
+from nano_vllm.sampling import SamplingParams                           # 采样参数
+from nano_vllm.memory import MemoryManager, KVCache                     # 内存管理
+from nano_vllm.config import SchedulerConfig                            # 调度器配置
+from nano_vllm.utils.metrics import SchedulerMetrics                    # 性能指标
 
 logger = logging.getLogger(__name__)
+```
 
+**设计思想**：
+- **异步架构**：使用asyncio支持高并发请求处理
+- **优先队列**：使用heapq实现高效的优先级调度
+- **模块化设计**：清晰分离序列管理、内存管理和配置管理
+
+## 📊 核心数据结构定义
+
+### SchedulingPolicy - 调度策略枚举
+
+```python
 class SchedulingPolicy(Enum):
-    """调度策略"""
-    FCFS = "fcfs"  # 先来先服务
-    PRIORITY = "priority"  # 优先级调度
-    SJF = "sjf"  # 最短作业优先
-    ROUND_ROBIN = "round_robin"  # 轮询调度
+    """
+    调度策略枚举
+    
+    设计思想：
+    1. 支持多种调度算法，适应不同场景需求
+    2. 可根据工作负载特性选择最优策略
+    3. 平衡吞吐量、延迟和公平性
+    """
+    FCFS = "fcfs"          # 先来先服务 - 简单公平，适合批处理场景
+    PRIORITY = "priority"   # 优先级调度 - 支持差异化服务质量
+    SJF = "sjf"            # 最短作业优先 - 最小化平均等待时间
+    ROUND_ROBIN = "round_robin"  # 轮询调度 - 保证公平性，防止饥饿
+```
 
+### SchedulerOutput - 调度器输出
+
+```python
 @dataclass
 class SchedulerOutput:
-    """调度器输出"""
-    scheduled_seq_groups: List[SequenceGroup]
-    preempted_seq_groups: List[SequenceGroup]
-    ignored_seq_groups: List[SequenceGroup]
-    num_batched_tokens: int
-    blocks_to_swap_in: Dict[int, int]
-    blocks_to_swap_out: Dict[int, int]
-    blocks_to_copy: Dict[int, List[int]]
-    kv_caches: List[KVCache]
+    """
+    调度器输出数据结构
+    
+    设计思想：
+    1. 封装调度决策的所有结果
+    2. 包含内存操作指令，支持内存管理
+    3. 提供推理引擎所需的完整信息
+    """
+    scheduled_seq_groups: List[SequenceGroup]  # 本轮调度的序列组
+    preempted_seq_groups: List[SequenceGroup]  # 被抢占的序列组
+    ignored_seq_groups: List[SequenceGroup]    # 被忽略的序列组
+    num_batched_tokens: int                    # 批处理token总数
+    blocks_to_swap_in: Dict[int, int]          # 需要交换入的内存块
+    blocks_to_swap_out: Dict[int, int]         # 需要交换出的内存块
+    blocks_to_copy: Dict[int, List[int]]       # 需要复制的内存块（beam search）
+    kv_caches: List[KVCache]                   # KV缓存列表
+```
 
+### RequestMetadata - 请求元数据
+
+```python
 @dataclass
 class RequestMetadata:
-    """请求元数据"""
-    request_id: str
-    arrival_time: float
-    priority: int
-    estimated_tokens: int
-    sampling_params: SamplingParams
+    """
+    请求元数据
+    
+    设计思想：
+    1. 包含调度决策所需的所有信息
+    2. 支持优先队列排序
+    3. 便于性能分析和监控
+    """
+    request_id: str                    # 请求唯一标识
+    arrival_time: float               # 到达时间戳
+    priority: int                     # 优先级（数值越大优先级越高）
+    estimated_tokens: int             # 预估token数量
+    sampling_params: SamplingParams   # 采样参数
     
     def __lt__(self, other):
-        """用于优先队列排序"""
+        """
+        优先队列排序逻辑
+        
+        设计思想：
+        1. 优先级高的请求优先处理
+        2. 同优先级按到达时间排序（FCFS）
+        3. 支持heapq的最小堆操作
+        """
         if self.priority != other.priority:
             return self.priority > other.priority  # 高优先级优先
         return self.arrival_time < other.arrival_time  # 早到优先
+```
 
+## 🎛️ RequestScheduler - 核心调度器
+
+```python
 class RequestScheduler:
-    """请求调度器"""
+    """
+    请求调度器核心类
+    
+    设计思想：
+    1. 统一管理所有请求的生命周期
+    2. 实现多种调度策略和优化技术
+    3. 与内存管理器协作，实现内存感知调度
+    """
     
     def __init__(self, config: SchedulerConfig, memory_manager: MemoryManager):
         self.config = config
         self.memory_manager = memory_manager
         
-        # 调度队列
-        self.waiting_queue: List[RequestMetadata] = []  # 等待队列（优先队列）
-        self.running_sequences: Dict[str, SequenceGroup] = {}  # 运行中的序列
-        self.swapped_sequences: Dict[str, SequenceGroup] = {}  # 交换出的序列
+        # 调度队列 - 分层管理不同状态的请求
+        self.waiting_queue: List[RequestMetadata] = []        # 等待队列（优先队列）
+        self.running_sequences: Dict[str, SequenceGroup] = {} # 运行中的序列
+        self.swapped_sequences: Dict[str, SequenceGroup] = {} # 交换出的序列
         
-        # 调度状态
-        self.current_batch_size = 0
-        self.current_batch_tokens = 0
-        self.last_schedule_time = 0.0
+        # 调度状态 - 跟踪当前批处理状态
+        self.current_batch_size = 0      # 当前批处理中的序列数
+        self.current_batch_tokens = 0    # 当前批处理中的token数
+        self.last_schedule_time = 0.0    # 上次调度时间
         
-        # 性能指标
+        # 性能指标 - 监控调度器性能
         self.metrics = SchedulerMetrics()
         
-        # 线程安全
+        # 线程安全 - 支持并发访问
         self.lock = asyncio.Lock()
         
-        # 调度策略
+        # 调度策略配置
         self.policy = SchedulingPolicy(config.scheduling_policy)
         
-        # 预抢占支持
+        # 抢占支持 - 高优先级任务抢占低优先级任务
         self.enable_preemption = config.enable_preemption
         self.preemption_threshold = config.preemption_threshold
         
-        # 批处理优化
+        # 批处理优化 - 平衡吞吐量和延迟
         self.max_batch_size = config.max_num_seqs
         self.max_batch_tokens = config.max_num_batched_tokens
         
-        # 内存管理
+        # 内存管理配置
         self.block_size = config.block_size
         self.max_blocks_per_seq = config.max_model_len // self.block_size
         
         logger.info(f"RequestScheduler initialized with policy: {self.policy.value}")
     
     async def add_request(self, request_metadata: RequestMetadata, sequence_group: SequenceGroup):
-        """添加新请求"""
+        """
+        添加新请求到调度器
+        
+        设计思想：
+        1. 预估请求资源需求，支持调度决策
+        2. 使用优先队列管理等待请求
+        3. 记录性能指标，支持监控分析
+        """
         async with self.lock:
-            # 估算请求所需的token数
+            # 估算请求所需的token数 - 用于资源规划
             estimated_tokens = self._estimate_request_tokens(request_metadata, sequence_group)
             request_metadata.estimated_tokens = estimated_tokens
             
-            # 添加到等待队列
+            # 添加到等待队列 - 自动按优先级排序
             heapq.heappush(self.waiting_queue, request_metadata)
             
-            # 存储序列组
+            # 存储序列组 - 建立请求ID到序列组的映射
             self.running_sequences[request_metadata.request_id] = sequence_group
             
-            # 更新指标
+            # 更新指标 - 记录请求到达事件
             self.metrics.record_request_arrival(request_metadata)
             
             logger.debug(f"Added request {request_metadata.request_id} to waiting queue")
     
     def _estimate_request_tokens(self, request_metadata: RequestMetadata, sequence_group: SequenceGroup) -> int:
-        """估算请求所需的token数"""
-        prompt_tokens = len(sequence_group.prompt_token_ids)
-        max_new_tokens = request_metadata.sampling_params.max_tokens or self.config.default_max_tokens
+        """
+        估算请求所需的token数
         
-        return prompt_tokens + max_new_tokens
+        设计思想：
+        1. 包含输入prompt和预期输出的token数
+        2. 用于内存分配和批处理决策
+        3. 支持更精确的资源规划
+        """
+        prompt_tokens = len(sequence_group.prompt_token_ids)  # 输入token数
+        max_new_tokens = request_metadata.sampling_params.max_tokens or self.config.default_max_tokens  # 最大输出token数
+        
+        return prompt_tokens + max_new_tokens  # 总token数估算
     
     async def schedule(self) -> SchedulerOutput:
-        """执行调度决策"""
+        """
+        执行调度决策 - 调度器的核心方法
+        
+        设计思想：
+        1. 多阶段调度流程，确保资源最优利用
+        2. 处理完成、交换、新请求、抢占等各种情况
+        3. 生成完整的调度输出，指导推理执行
+        """
         start_time = time.time()
         
         async with self.lock:
-            # 1. 处理完成的序列
+            # 1. 处理完成的序列 - 释放资源
             await self._process_finished_sequences()
             
-            # 2. 处理交换操作
+            # 2. 处理交换操作 - 恢复被交换的高优先级请求
             swap_in_requests = await self._handle_swap_operations()
             
-            # 3. 调度新请求
+            # 3. 调度新请求 - 从等待队列选择请求
             scheduled_requests = await self._schedule_new_requests()
             
-            # 4. 处理抢占
+            # 4. 处理抢占 - 为高优先级请求腾出资源
             preempted_requests = await self._handle_preemption()
             
-            # 5. 构建调度输出
+            # 5. 构建调度输出 - 生成推理引擎所需信息
             scheduler_output = await self._build_scheduler_output(
                 scheduled_requests, preempted_requests, swap_in_requests
             )
             
-            # 6. 更新调度状态
+            # 6. 更新调度状态 - 维护调度器内部状态
             await self._update_scheduler_state(scheduler_output)
             
-            # 记录调度时间
+            # 记录调度时间 - 性能监控
             schedule_time = time.time() - start_time
             self.metrics.record_schedule_time(schedule_time)
             
             return scheduler_output
     
     async def _process_finished_sequences(self):
-        """处理完成的序列"""
+        """
+        处理完成的序列
+        
+        设计思想：
+        1. 及时释放完成序列的资源
+        2. 更新性能指标，支持分析
+        3. 维护调度器状态一致性
+        """
         finished_request_ids = []
         
         for request_id, seq_group in self.running_sequences.items():
-            if seq_group.is_finished():
+            if seq_group.is_finished():  # 检查序列是否完成
                 finished_request_ids.append(request_id)
                 
-                # 释放内存块
+                # 释放内存块 - 回收KV缓存等资源
                 await self._free_sequence_blocks(seq_group)
                 
-                # 更新指标
+                # 更新指标 - 记录完成时间和性能数据
                 self.metrics.record_request_completion(seq_group)
         
-        # 从运行队列中移除
+        # 从运行队列中移除 - 清理完成的请求
         for request_id in finished_request_ids:
             del self.running_sequences[request_id]
             logger.debug(f"Removed finished request {request_id}")
     
     async def _handle_swap_operations(self) -> List[SequenceGroup]:
-        """处理交换操作"""
+        """
+        处理交换操作 - 将被交换的请求恢复到GPU内存
+        
+        设计思想：
+        1. 优先恢复高优先级的被交换请求
+        2. 检查内存可用性，避免OOM
+        3. 支持内存不足时的优雅降级
+        """
         swap_in_requests = []
         
         if not self.swapped_sequences:
             return swap_in_requests
         
-        # 按优先级排序交换队列
+        # 按优先级排序交换队列 - 高优先级优先恢复
         sorted_swapped = sorted(
             self.swapped_sequences.items(),
             key=lambda x: (x[1].priority, x[1].arrival_time),
@@ -193,11 +287,292 @@ class RequestScheduler:
             required_blocks = self._calculate_required_blocks(seq_group)
             
             if await self.memory_manager.can_allocate_blocks(required_blocks):
-                # 执行交换
+                # 执行交换 - 将KV缓存从CPU恢复到GPU
                 await self._swap_in_sequence(seq_group)
                 swap_in_requests.append(seq_group)
                 
-                # 从交换队列移除
+                # 从交换队列移除，加入运行队列
+                logger.debug(f"Swapped in request {request_id}")
+        
+        return swap_in_requests
+
+## 🔄 抢占与内存交换机制
+
+```python
+    async def _handle_preemption(self) -> List[SequenceGroup]:
+        """
+        处理抢占 - 为高优先级请求腾出资源
+        
+        设计思想：
+        1. 基于优先级差异决定是否抢占
+        2. 选择最优的抢占候选者
+        3. 通过内存交换实现优雅抢占
+        """
+        if not self.enable_preemption:
+            return []
+        
+        preempted_requests = []
+        
+        # 检查是否需要抢占 - 基于优先级差异
+        if not self._should_preempt():
+            return preempted_requests
+        
+        # 选择抢占候选者 - 优先抢占低优先级任务
+        candidates = self._select_preemption_candidates()
+        
+        for seq_group in candidates:
+            # 执行抢占 - 交换到CPU内存
+            await self._preempt_sequence(seq_group)
+            preempted_requests.append(seq_group)
+            
+            logger.debug(f"Preempted request {seq_group.request_id}")
+        
+        return preempted_requests
+    
+    def _should_preempt(self) -> bool:
+        """
+        检查是否应该执行抢占
+        
+        设计思想：
+        1. 比较等待队列和运行队列的优先级
+        2. 使用抢占阈值避免频繁抢占
+        3. 确保抢占的必要性和合理性
+        """
+        # 检查等待队列中是否有高优先级请求
+        if not self.waiting_queue:
+            return False
+        
+        highest_waiting_priority = max(req.priority for req in self.waiting_queue)
+        
+        # 检查运行中的请求是否有低优先级的 - 优先级差异超过阈值才抢占
+        for seq_group in self.running_sequences.values():
+            if seq_group.priority < highest_waiting_priority - self.preemption_threshold:
+                return True
+        
+        return False
+    
+    def _select_preemption_candidates(self) -> List[SequenceGroup]:
+        """
+        选择抢占候选者
+        
+        设计思想：
+        1. 选择优先级最低的运行中请求
+        2. 考虑抢占成本，优先选择刚开始的请求
+        3. 避免抢占接近完成的请求
+        """
+        candidates = []
+        
+        # 获取等待队列中的最高优先级
+        highest_waiting_priority = max(req.priority for req in self.waiting_queue)
+        
+        # 选择优先级低于阈值的运行中请求
+        for seq_group in self.running_sequences.values():
+            if seq_group.priority < highest_waiting_priority - self.preemption_threshold:
+                candidates.append(seq_group)
+        
+        # 按优先级排序，优先抢占低优先级的 - 最小化抢占影响
+        candidates.sort(key=lambda x: x.priority)
+        
+        return candidates
+    
+    async def _preempt_sequence(self, seq_group: SequenceGroup):
+        """
+        抢占序列
+        
+        设计思想：
+        1. 将KV缓存交换到CPU内存
+        2. 更新序列状态和队列管理
+        3. 记录抢占事件用于性能分析
+        """
+        # 将序列交换到CPU内存 - 保存计算状态
+        await self._swap_out_sequence(seq_group)
+        
+        # 从运行队列移除，加入交换队列 - 状态转换
+        request_id = seq_group.request_id
+        if request_id in self.running_sequences:
+            del self.running_sequences[request_id]
+            self.swapped_sequences[request_id] = seq_group
+        
+        # 更新指标 - 记录抢占事件
+        self.metrics.record_preemption(seq_group)
+    
+    async def _swap_out_sequence(self, seq_group: SequenceGroup):
+        """
+        将序列交换到CPU内存
+        
+        设计思想：
+        1. 收集序列的所有内存块
+        2. 批量执行交换操作提高效率
+        3. 保持KV缓存的完整性
+        """
+        # 获取序列的内存块 - 收集所有需要交换的块
+        blocks_to_swap = []
+        for seq in seq_group.seqs:
+            if hasattr(seq, 'logical_token_blocks'):
+                blocks_to_swap.extend(seq.logical_token_blocks)
+        
+        # 执行交换操作 - 批量交换提高效率
+        if blocks_to_swap:
+            await self.memory_manager.swap_out_blocks(blocks_to_swap)
+    
+    async def _swap_in_sequence(self, seq_group: SequenceGroup):
+        """
+        将序列交换到GPU内存
+        
+        设计思想：
+        1. 恢复序列的KV缓存到GPU
+        2. 重建内存块映射关系
+        3. 确保序列可以继续执行
+        """
+        # 获取序列的内存块 - 收集需要恢复的块
+        blocks_to_swap = []
+        for seq in seq_group.seqs:
+            if hasattr(seq, 'logical_token_blocks'):
+                blocks_to_swap.extend(seq.logical_token_blocks)
+        
+        # 执行交换操作 - 恢复到GPU内存
+        if blocks_to_swap:
+            await self.memory_manager.swap_in_blocks(blocks_to_swap)
+    
+    def _remove_from_batch_state(self, seq_group: SequenceGroup):
+        """
+        从批处理状态中移除
+        
+        设计思想：
+        1. 更新批处理计数器
+        2. 释放批处理容量
+        3. 维护状态一致性
+        """
+        self.current_batch_size -= len(seq_group.seqs)
+        
+        for seq in seq_group.seqs:
+            self.current_batch_tokens -= len(seq.token_ids)
+
+## 📤 调度输出构建
+
+```python
+    async def _build_scheduler_output(self, scheduled_requests: List[SequenceGroup], 
+                                    preempted_requests: List[SequenceGroup],
+                                    swap_in_requests: List[SequenceGroup]) -> SchedulerOutput:
+        """
+        构建调度器输出
+        
+        设计思想：
+        1. 整合所有调度决策结果
+        2. 生成内存操作指令
+        3. 提供推理引擎执行所需的完整信息
+        """
+        # 计算批处理token数 - 用于性能监控
+        num_batched_tokens = sum(
+            len(seq.token_ids) for seq_group in scheduled_requests 
+            for seq in seq_group.seqs
+        )
+        
+        # 获取内存操作指令 - 指导内存管理器执行
+        blocks_to_swap_in = await self._get_swap_in_blocks(swap_in_requests)
+        blocks_to_swap_out = await self._get_swap_out_blocks(preempted_requests)
+        blocks_to_copy = await self._get_copy_blocks(scheduled_requests)
+        
+        # 获取KV缓存 - 提供给推理引擎
+        kv_caches = await self._get_kv_caches(scheduled_requests)
+        
+        return SchedulerOutput(
+            scheduled_seq_groups=scheduled_requests,
+            preempted_seq_groups=preempted_requests,
+            ignored_seq_groups=[],  # 暂时为空，可扩展用于跳过的请求
+            num_batched_tokens=num_batched_tokens,
+            blocks_to_swap_in=blocks_to_swap_in,
+            blocks_to_swap_out=blocks_to_swap_out,
+            blocks_to_copy=blocks_to_copy,
+            kv_caches=kv_caches
+        )
+    
+    async def _get_swap_in_blocks(self, swap_in_requests: List[SequenceGroup]) -> Dict[int, int]:
+        """
+        获取需要交换入的内存块
+        
+        设计思想：
+        1. 收集所有需要从CPU恢复到GPU的内存块
+        2. 建立逻辑块到物理块的映射
+        3. 支持批量交换操作
+        """
+        swap_in_blocks = {}
+        
+        for seq_group in swap_in_requests:
+            for seq in seq_group.seqs:
+                if hasattr(seq, 'logical_token_blocks'):
+                    for logical_block, physical_block in seq.logical_token_blocks.items():
+                        swap_in_blocks[logical_block] = physical_block
+        
+        return swap_in_blocks
+    
+    async def _get_swap_out_blocks(self, preempted_requests: List[SequenceGroup]) -> Dict[int, int]:
+        """
+        获取需要交换出的内存块
+        
+        设计思想：
+        1. 收集被抢占序列的内存块
+        2. 准备交换到CPU内存的映射
+        3. 确保抢占过程的数据完整性
+        """
+        swap_out_blocks = {}
+        
+        for seq_group in preempted_requests:
+            for seq in seq_group.seqs:
+                if hasattr(seq, 'logical_token_blocks'):
+                    for logical_block, physical_block in seq.logical_token_blocks.items():
+                        swap_out_blocks[logical_block] = physical_block
+        
+        return swap_out_blocks
+    
+    async def _get_copy_blocks(self, scheduled_requests: List[SequenceGroup]) -> Dict[int, List[int]]:
+        """
+        获取需要复制的内存块（用于beam search）
+        
+        设计思想：
+        1. 支持beam search的并行序列生成
+        2. 复制父序列的KV缓存给子序列
+        3. 优化内存使用，避免重复计算
+        """
+        copy_blocks = {}
+        
+        for seq_group in scheduled_requests:
+            # 如果是beam search，需要复制父序列的块 - 支持并行生成
+            if len(seq_group.seqs) > 1:
+                parent_seq = seq_group.seqs[0]
+                if hasattr(parent_seq, 'logical_token_blocks'):
+                    for logical_block, physical_block in parent_seq.logical_token_blocks.items():
+                        copy_blocks[physical_block] = [
+                            seq.logical_token_blocks.get(logical_block, physical_block)
+                            for seq in seq_group.seqs[1:]
+                        ]
+        
+        return copy_blocks
+    
+    async def _get_kv_caches(self, scheduled_requests: List[SequenceGroup]) -> List[KVCache]:
+        """
+        获取KV缓存
+        
+        设计思想：
+        1. 收集所有调度序列的KV缓存
+        2. 提供给推理引擎进行attention计算
+        3. 支持高效的批处理推理
+        """
+        kv_caches = []
+        
+        for seq_group in scheduled_requests:
+            for seq in seq_group.seqs:
+                if hasattr(seq, 'kv_cache'):
+                    kv_caches.append(seq.kv_cache)
+        
+        return kv_caches
+```
+
+**设计亮点**：
+- **异步锁机制**：使用asyncio.Lock确保并发安全
+- **多策略支持**：灵活的调度策略选择和实现
+- **资源感知**：与内存管理器深度集成，实现内存感知调度
+- **性能监控**：全面的指标收集和性能分析支持
                 del self.swapped_sequences[request_id]
                 self.running_sequences[request_id] = seq_group
                 
@@ -206,7 +581,14 @@ class RequestScheduler:
         return swap_in_requests
     
     async def _schedule_new_requests(self) -> List[SequenceGroup]:
-        """调度新请求"""
+        """
+        调度新请求 - 从等待队列选择合适的请求进行调度
+        
+        设计思想：
+        1. 根据调度策略选择最优请求
+        2. 检查资源可用性，确保可以执行
+        3. 分配必要资源并更新状态
+        """
         scheduled_requests = []
         
         while self.waiting_queue and self._can_schedule_more():
@@ -240,7 +622,14 @@ class RequestScheduler:
         return scheduled_requests
     
     async def _select_next_request(self) -> Optional[RequestMetadata]:
-        """根据调度策略选择下一个请求"""
+        """
+        根据调度策略选择下一个请求
+        
+        设计思想：
+        1. 支持多种调度策略的统一接口
+        2. 每种策略都有其特定的优化目标
+        3. 保持策略切换的灵活性
+        """
         if not self.waiting_queue:
             return None
         
@@ -251,7 +640,7 @@ class RequestScheduler:
             return heapq.heappop(self.waiting_queue)  # 已按优先级排序
         
         elif self.policy == SchedulingPolicy.SJF:
-            # 找到最短的作业
+            # 找到最短的作业 - 最小化平均等待时间
             min_tokens = float('inf')
             min_index = -1
             
@@ -264,7 +653,7 @@ class RequestScheduler:
                 return self.waiting_queue.pop(min_index)
         
         elif self.policy == SchedulingPolicy.ROUND_ROBIN:
-            # 轮询调度（简化实现）
+            # 轮询调度（简化实现） - 保证公平性
             return heapq.heappop(self.waiting_queue)
         
         return None
@@ -324,18 +713,25 @@ class RequestScheduler:
         for seq in seq_group.seqs:
             self.current_batch_tokens += len(seq.token_ids)
     
-    async def _handle_preemption(self) -> List[SequenceGroup]:
-        """处理抢占"""
+    async def _handle_preemption_v2(self) -> List[SequenceGroup]:
+        """
+        处理抢占 - 备用实现
+        
+        设计思想：
+        1. 基于资源压力和优先级进行抢占决策
+        2. 选择最优的抢占候选者
+        3. 最小化抢占对系统性能的影响
+        """
         preempted_requests = []
         
         if not self.enable_preemption:
             return preempted_requests
         
-        # 检查是否需要抢占
+        # 检查是否需要抢占 - 多维度判断
         if (self.current_batch_tokens > self.preemption_threshold or
             len(self.running_sequences) > self.max_batch_size):
             
-            # 选择要抢占的序列
+            # 选择要抢占的序列 - 智能选择策略
             candidates = await self._select_preemption_candidates()
             
             for seq_group in candidates:

@@ -1,37 +1,250 @@
-# 内存管理器分析
+# 内存管理器 (BlockManager) 代码分析
 
 ## 🎯 内存管理器概览
 
-内存管理器是 nano-vllm 中负责高效内存分配、回收和优化的核心组件。它管理模型权重、KV缓存、激活值等各种内存资源，确保系统在有限内存下实现最大吞吐量。
+nano-vLLM 的内存管理器 (BlockManager) 是推理引擎的核心组件，负责高效管理 KV Cache 的分配和回收。它实现了基于块的内存管理机制，支持前缀缓存优化，显著提升内存利用率和推理性能。本文档基于 nano-vLLM 的真实代码进行分析。
 
-## 🏗️ 核心架构
+## 🏗️ 核心架构与导入
 
 ```python
-import torch
-import torch.nn as nn
-from typing import Dict, List, Optional, Tuple, Any, Union
-from dataclasses import dataclass, field
-from enum import Enum
-import threading
-import time
-import logging
-import gc
-import psutil
-from collections import defaultdict, deque
+from collections import deque
+import xxhash
 import numpy as np
 
-from nano_vllm.config import MemoryConfig, CacheConfig
-from nano_vllm.utils.logger import get_logger
+from nanovllm.engine.sequence import Sequence
+```
 
-logger = get_logger(__name__)
+**设计思想：**
+- 使用 `deque` 实现高效的空闲块队列管理
+- 采用 `xxhash` 高性能哈希算法进行前缀缓存
+- 利用 `numpy` 进行高效的数组操作
+- 与 `Sequence` 类紧密集成，支持序列级别的内存管理
 
-class MemoryType(Enum):
-    """内存类型枚举"""
-    MODEL_WEIGHTS = "model_weights"
-    KV_CACHE = "kv_cache"
-    ACTIVATIONS = "activations"
-    WORKSPACE = "workspace"
-    SYSTEM = "system"
+## 📦 Block 类实现
+
+### Block 数据结构
+
+```python
+class Block:
+    def __init__(self, block_id):
+        self.block_id = block_id      # 块的唯一标识符
+        self.ref_count = 0            # 引用计数，支持共享
+        self.hash = -1                # 块内容的哈希值，用于前缀缓存
+        self.token_ids = []           # 存储的token序列
+
+    def update(self, hash: int, token_ids: list[int]):
+        """更新块的哈希值和token内容"""
+        self.hash = hash
+        self.token_ids = token_ids
+
+    def reset(self):
+        """重置块状态，准备重新分配"""
+        self.ref_count = 1
+        self.hash = -1
+        self.token_ids = []
+```
+
+**核心特性：**
+- **引用计数管理**：支持多个序列共享同一个块，实现内存复用
+- **哈希缓存**：通过哈希值快速匹配相同的前缀内容
+- **状态管理**：清晰的块状态转换和重置机制
+
+## 🧠 BlockManager 核心实现
+
+### 初始化与数据结构
+
+```python
+class BlockManager:
+    def __init__(self, num_blocks: int, block_size: int):
+        self.block_size = block_size                           # 每个块的大小（token数）
+        self.blocks: list[Block] = [Block(i) for i in range(num_blocks)]  # 所有块的列表
+        self.hash_to_block_id: dict[int, int] = dict()        # 哈希值到块ID的映射
+        self.free_block_ids: deque[int] = deque(range(num_blocks))  # 空闲块队列
+        self.used_block_ids: set[int] = set()                 # 已使用块集合
+```
+
+**设计亮点：**
+- **分离式管理**：空闲块用队列管理，已用块用集合管理，提升查找效率
+- **哈希索引**：建立哈希到块ID的映射，支持O(1)的前缀匹配
+- **预分配策略**：预先创建所有块，避免运行时分配开销
+
+### 前缀缓存哈希计算
+
+```python
+@classmethod
+def compute_hash(cls, token_ids: list[int], prefix: int = -1):
+    """计算token序列的哈希值，支持前缀链式哈希"""
+    h = xxhash.xxh64()
+    if prefix != -1:
+        h.update(prefix.to_bytes(8, "little"))  # 包含前缀哈希
+    h.update(np.array(token_ids).tobytes())     # 当前块的token
+    return h.intdigest()
+```
+
+**前缀缓存机制：**
+- **链式哈希**：每个块的哈希包含前一个块的哈希，形成链式结构
+- **高效匹配**：相同前缀的不同序列可以共享前面的块
+- **快速计算**：使用xxhash算法，计算速度极快
+
+## 🔄 内存分配与回收
+
+### 块分配机制
+
+```python
+def _allocate_block(self, block_id: int) -> Block:
+    """分配指定的内存块"""
+    block = self.blocks[block_id]
+    assert block.ref_count == 0
+    block.reset()                              # 重置块状态
+    self.free_block_ids.remove(block_id)       # 从空闲队列移除
+    self.used_block_ids.add(block_id)          # 加入已用集合
+    return self.blocks[block_id]
+
+def _deallocate_block(self, block_id: int) -> Block:
+    """回收内存块"""
+    assert self.blocks[block_id].ref_count == 0
+    self.used_block_ids.remove(block_id)       # 从已用集合移除
+    self.free_block_ids.append(block_id)       # 加入空闲队列
+```
+
+### 序列内存分配
+
+```python
+def can_allocate(self, seq: Sequence) -> bool:
+    """检查是否有足够的空闲块分配给序列"""
+    return len(self.free_block_ids) >= seq.num_blocks
+
+def allocate(self, seq: Sequence):
+    """为序列分配内存块，支持前缀缓存优化"""
+    assert not seq.block_table
+    h = -1
+    cache_miss = False
+    
+    for i in range(seq.num_blocks):
+        token_ids = seq.block(i)
+        # 计算当前块的哈希值
+        h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
+        block_id = self.hash_to_block_id.get(h, -1)
+        
+        # 检查是否命中前缀缓存
+        if block_id == -1 or self.blocks[block_id].token_ids != token_ids:
+            cache_miss = True
+            
+        if cache_miss:
+            # 缓存未命中，分配新块
+            block_id = self.free_block_ids[0]
+            block = self._allocate_block(block_id)
+        else:
+            # 缓存命中，复用现有块
+            seq.num_cached_tokens += self.block_size
+            if block_id in self.used_block_ids:
+                block = self.blocks[block_id]
+                block.ref_count += 1  # 增加引用计数
+            else:
+                block = self._allocate_block(block_id)
+                
+        # 更新块信息和哈希映射
+        if h != -1:
+            block.update(h, token_ids)
+            self.hash_to_block_id[h] = block_id
+        seq.block_table.append(block_id)
+```
+
+**前缀缓存优化：**
+- **智能复用**：相同前缀的序列可以共享前面的块
+- **引用计数**：支持多个序列引用同一个块
+- **缓存统计**：跟踪缓存命中的token数量
+
+### 内存回收机制
+
+```python
+def deallocate(self, seq: Sequence):
+    """回收序列占用的所有内存块"""
+    for block_id in reversed(seq.block_table):
+        block = self.blocks[block_id]
+        block.ref_count -= 1
+        if block.ref_count == 0:
+            self._deallocate_block(block_id)  # 引用计数为0时才真正回收
+    seq.num_cached_tokens = 0
+    seq.block_table.clear()
+```
+
+## 🔧 动态内存管理
+
+### 序列扩展支持
+
+```python
+def can_append(self, seq: Sequence) -> bool:
+    """检查序列是否可以追加新token"""
+    return len(self.free_block_ids) >= (len(seq) % self.block_size == 1)
+
+def may_append(self, seq: Sequence):
+    """为序列追加新token时的内存管理"""
+    block_table = seq.block_table
+    last_block = self.blocks[block_table[-1]]
+    
+    if len(seq) % self.block_size == 1:
+        # 当前块已满，需要分配新块
+        assert last_block.hash != -1
+        block_id = self.free_block_ids[0]
+        self._allocate_block(block_id)
+        block_table.append(block_id)
+        
+    elif len(seq) % self.block_size == 0:
+        # 块刚好填满，更新哈希值
+        assert last_block.hash == -1
+        token_ids = seq.block(seq.num_blocks-1)
+        prefix = self.blocks[block_table[-2]].hash if len(block_table) > 1 else -1
+        h = self.compute_hash(token_ids, prefix)
+        last_block.update(h, token_ids)
+        self.hash_to_block_id[h] = last_block.block_id
+    else:
+        # 块未满，继续使用
+        assert last_block.hash == -1
+```
+
+## 🚀 性能特性与优化
+
+### 内存效率优化
+
+1. **前缀缓存**：
+   - 相同前缀的序列共享内存块
+   - 显著减少内存使用，特别是批处理场景
+   - 支持动态的缓存命中统计
+
+2. **引用计数管理**：
+   - 精确的内存生命周期管理
+   - 支持安全的内存共享
+   - 避免内存泄漏和重复释放
+
+3. **高效数据结构**：
+   - 使用deque管理空闲块，O(1)的分配和回收
+   - 哈希表实现O(1)的前缀匹配
+   - 集合管理已用块，快速查找
+
+### 计算优化
+
+1. **快速哈希计算**：
+   - 使用xxhash高性能哈希算法
+   - 链式哈希避免重复计算
+   - 支持增量哈希更新
+
+2. **内存预分配**：
+   - 启动时预分配所有块
+   - 避免运行时的内存分配开销
+   - 提供可预测的内存使用模式
+
+### 调度友好设计
+
+1. **容量检查**：
+   - 提供`can_allocate`和`can_append`接口
+   - 调度器可以提前判断内存可用性
+   - 支持智能的序列调度决策
+
+2. **状态透明**：
+   - 清晰的块状态管理
+   - 支持调度器的抢占和恢复机制
+   - 提供详细的内存使用统计
 
 class AllocationStrategy(Enum):
     """内存分配策略"""

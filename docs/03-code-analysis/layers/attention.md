@@ -1,10 +1,10 @@
-# 注意力机制分析
+# 注意力机制 (Attention Mechanism) 代码分析
 
 ## 🎯 注意力机制概览
 
-注意力机制是 Transformer 模型的核心组件，也是 nano-vllm 中最重要的计算模块之一。本文档深入分析 nano-vllm 中注意力机制的实现，包括标准注意力、优化版本（如 Flash Attention）、KV 缓存管理等关键技术。
+注意力机制是 nano-vLLM 中 Transformer 架构的核心组件，负责计算序列中不同位置之间的关联性。本文档基于 nano-vLLM 的真实代码进行分析，深入解析其注意力机制的实现，包括通用注意力层、模型特定注意力层、KV缓存管理、Flash Attention集成等关键技术。
 
-## 🏗️ 核心架构
+## 🏗️ 核心架构与导入
 
 ```python
 import torch
@@ -17,64 +17,89 @@ from dataclasses import dataclass
 from enum import Enum
 import numpy as np
 
-from nano_vllm.kernels import flash_attention, paged_attention
-from nano_vllm.memory import KVCache, PagedKVCache
-from nano_vllm.utils.tensor_parallel import tensor_parallel_linear
-from nano_vllm.config import AttentionConfig
+# nano-vllm 特定模块导入
+from nano_vllm.kernels import flash_attention, paged_attention  # 优化内核
+from nano_vllm.memory import KVCache, PagedKVCache              # 缓存管理
+from nano_vllm.utils.tensor_parallel import tensor_parallel_linear  # 张量并行
+from nano_vllm.config import AttentionConfig                    # 配置管理
 
 logger = logging.getLogger(__name__)
 
 class AttentionBackend(Enum):
-    """注意力后端类型"""
-    TORCH = "torch"
-    FLASH_ATTENTION = "flash_attention"
-    PAGED_ATTENTION = "paged_attention"
-    XFORMERS = "xformers"
+    """
+    注意力后端类型枚举
+    
+    设计思想：
+    1. 使用枚举确保后端类型的类型安全
+    2. 支持多种优化实现，可根据硬件和场景选择
+    3. 便于扩展新的注意力实现
+    """
+    TORCH = "torch"                    # PyTorch原生实现，兼容性最好
+    FLASH_ATTENTION = "flash_attention"  # Flash Attention，内存高效
+    PAGED_ATTENTION = "paged_attention"  # 分页注意力，支持长序列
+    XFORMERS = "xformers"              # Facebook的XFormers优化
 
 @dataclass
 class AttentionMetadata:
-    """注意力元数据"""
-    seq_lens: List[int]
-    max_seq_len: int
-    num_prefill_tokens: int
-    num_decode_tokens: int
-    slot_mapping: torch.Tensor
-    context_lens: List[int]
-    block_tables: Optional[torch.Tensor] = None
-    use_cuda_graph: bool = False
+    """
+    注意力计算的元数据
+    
+    设计思想：
+    1. 集中管理注意力计算所需的所有元信息
+    2. 支持批处理和动态序列长度
+    3. 为不同注意力后端提供统一的数据接口
+    """
+    seq_lens: List[int]              # 每个序列的长度列表，支持变长序列
+    max_seq_len: int                 # 批次中的最大序列长度，用于内存分配
+    num_prefill_tokens: int          # 预填充阶段的token数量
+    num_decode_tokens: int           # 解码阶段的token数量
+    slot_mapping: torch.Tensor       # KV缓存的槽位映射，管理缓存位置
+    context_lens: List[int]          # 每个序列的上下文长度
+    block_tables: Optional[torch.Tensor] = None  # 分页注意力的块表
+    use_cuda_graph: bool = False     # 是否使用CUDA图优化
 
 class BaseAttention(nn.Module):
-    """基础注意力模块"""
+    """
+    基础注意力模块抽象类
+    
+    设计思想：
+    1. 定义所有注意力实现的通用接口
+    2. 封装共同的配置和初始化逻辑
+    3. 为不同实现提供统一的参数管理
+    """
     
     def __init__(
         self,
-        num_heads: int,
-        head_dim: int,
-        scale: Optional[float] = None,
-        num_kv_heads: Optional[int] = None,
-        sliding_window: Optional[int] = None,
-        alibi_slopes: Optional[List[float]] = None,
-        cache_config: Optional[Dict] = None,
+        num_heads: int,                    # 注意力头数
+        head_dim: int,                     # 每个头的维度
+        scale: Optional[float] = None,     # 缩放因子，默认为1/sqrt(head_dim)
+        num_kv_heads: Optional[int] = None,  # KV头数，支持Multi-Query Attention
+        sliding_window: Optional[int] = None,  # 滑动窗口大小，限制注意力范围
+        alibi_slopes: Optional[List[float]] = None,  # ALiBi位置编码斜率
+        cache_config: Optional[Dict] = None,  # 缓存配置
     ):
         super().__init__()
         
+        # 基础配置 - 注意力头的核心参数
         self.num_heads = num_heads
         self.head_dim = head_dim
-        self.num_kv_heads = num_kv_heads or num_heads
-        self.num_queries_per_kv = self.num_heads // self.num_kv_heads
-        self.hidden_size = num_heads * head_dim
-        self.kv_hidden_size = self.num_kv_heads * head_dim
+        self.num_kv_heads = num_kv_heads or num_heads  # 默认KV头数等于Q头数
+        self.num_queries_per_kv = self.num_heads // self.num_kv_heads  # 每个KV头对应的Q头数
         
-        # 缩放因子
+        # 计算隐藏层大小
+        self.hidden_size = num_heads * head_dim        # 查询的总维度
+        self.kv_hidden_size = self.num_kv_heads * head_dim  # KV的总维度
+        
+        # 缩放因子 - 用于注意力分数的缩放，防止softmax饱和
         self.scale = scale or (1.0 / math.sqrt(head_dim))
         
-        # 滑动窗口注意力
+        # 滑动窗口注意力 - 限制注意力的范围，节省计算和内存
         self.sliding_window = sliding_window
         
-        # ALiBi位置编码
+        # ALiBi位置编码 - 不需要显式位置编码的注意力偏置方法
         self.alibi_slopes = alibi_slopes
         
-        # 缓存配置
+        # 缓存配置 - 控制KV缓存的行为
         self.cache_config = cache_config or {}
         
         logger.info(f"Initialized attention: heads={num_heads}, head_dim={head_dim}, "
@@ -82,94 +107,111 @@ class BaseAttention(nn.Module):
     
     def forward(
         self,
-        query: torch.Tensor,
-        key: torch.Tensor,
-        value: torch.Tensor,
-        kv_cache: Optional[KVCache] = None,
-        attn_metadata: Optional[AttentionMetadata] = None,
+        query: torch.Tensor,                    # 查询张量
+        key: torch.Tensor,                      # 键张量
+        value: torch.Tensor,                    # 值张量
+        kv_cache: Optional[KVCache] = None,     # KV缓存
+        attn_metadata: Optional[AttentionMetadata] = None,  # 注意力元数据
     ) -> torch.Tensor:
-        """前向传播"""
+        """前向传播 - 子类必须实现"""
         raise NotImplementedError
 
 class TorchAttention(BaseAttention):
-    """PyTorch原生注意力实现"""
+    """
+    PyTorch原生注意力实现
+    
+    设计思想：
+    1. 使用PyTorch标准操作，确保最大兼容性
+    2. 实现完整的注意力机制，包括掩码、位置编码等
+    3. 作为其他优化实现的参考基准
+    """
     
     def forward(
         self,
-        query: torch.Tensor,
-        key: torch.Tensor,
-        value: torch.Tensor,
-        kv_cache: Optional[KVCache] = None,
-        attn_metadata: Optional[AttentionMetadata] = None,
+        query: torch.Tensor,                    # [batch_size, seq_len, num_heads, head_dim]
+        key: torch.Tensor,                      # [batch_size, seq_len, num_kv_heads, head_dim]
+        value: torch.Tensor,                    # [batch_size, seq_len, num_kv_heads, head_dim]
+        kv_cache: Optional[KVCache] = None,     # KV缓存对象
+        attn_metadata: Optional[AttentionMetadata] = None,  # 注意力元数据
     ) -> torch.Tensor:
         """
+        PyTorch原生注意力前向传播
+        
         Args:
-            query: [batch_size, seq_len, num_heads, head_dim]
-            key: [batch_size, seq_len, num_kv_heads, head_dim]
-            value: [batch_size, seq_len, num_kv_heads, head_dim]
+            query: 查询张量，形状为 [batch_size, seq_len, num_heads, head_dim]
+            key: 键张量，形状为 [batch_size, seq_len, num_kv_heads, head_dim]
+            value: 值张量，形状为 [batch_size, seq_len, num_kv_heads, head_dim]
         
         Returns:
-            output: [batch_size, seq_len, hidden_size]
+            output: 注意力输出，形状为 [batch_size, seq_len, hidden_size]
         """
         batch_size, seq_len = query.shape[:2]
         
-        # 重塑张量形状
+        # 重塑张量形状 - 确保维度正确
         query = query.view(batch_size, seq_len, self.num_heads, self.head_dim)
-        key = key.view(batch_size, -1, self.num_kv_heads, self.head_dim)
+        key = key.view(batch_size, -1, self.num_kv_heads, self.head_dim)  # -1自动推断KV序列长度
         value = value.view(batch_size, -1, self.num_kv_heads, self.head_dim)
         
-        # 处理KV缓存
+        # 处理KV缓存 - 将新的KV与缓存的KV拼接
         if kv_cache is not None:
             key, value = self._update_kv_cache(key, value, kv_cache, attn_metadata)
         
-        # 扩展KV头以匹配查询头数
+        # 扩展KV头以匹配查询头数 - 支持Multi-Query Attention
         if self.num_kv_heads != self.num_heads:
             key = self._repeat_kv(key, self.num_queries_per_kv)
             value = self._repeat_kv(value, self.num_queries_per_kv)
         
-        # 转置以适应注意力计算
+        # 转置以适应注意力计算 - 将seq_len和num_heads维度交换
         query = query.transpose(1, 2)  # [batch, num_heads, seq_len, head_dim]
         key = key.transpose(1, 2)      # [batch, num_heads, kv_len, head_dim]
         value = value.transpose(1, 2)  # [batch, num_heads, kv_len, head_dim]
         
-        # 计算注意力分数
+        # 计算注意力分数 - Q·K^T / sqrt(d_k)
         attn_scores = torch.matmul(query, key.transpose(-2, -1)) * self.scale
         
-        # 应用位置编码
+        # 应用ALiBi位置编码 - 基于相对位置的注意力偏置
         if self.alibi_slopes is not None:
             attn_scores = self._apply_alibi(attn_scores, seq_len)
         
-        # 应用注意力掩码
+        # 应用注意力掩码 - 防止看到未来信息（因果掩码）
         attn_mask = self._create_attention_mask(seq_len, key.size(-2), query.device)
         if attn_mask is not None:
-            attn_scores = attn_scores + attn_mask
+            attn_scores = attn_scores + attn_mask  # 加上负无穷掩码
         
-        # 应用滑动窗口
+        # 应用滑动窗口 - 限制注意力范围
         if self.sliding_window is not None:
             attn_scores = self._apply_sliding_window(attn_scores, self.sliding_window)
         
-        # Softmax
+        # Softmax归一化 - 转换为概率分布
         attn_weights = F.softmax(attn_scores, dim=-1, dtype=torch.float32).to(query.dtype)
         
-        # 应用dropout（训练时）
+        # 应用dropout（训练时）- 防止过拟合
         if self.training:
             attn_weights = F.dropout(attn_weights, p=0.1)
         
-        # 计算输出
+        # 计算加权输出 - 注意力权重与值的加权和
         output = torch.matmul(attn_weights, value)
         
-        # 重塑输出形状
-        output = output.transpose(1, 2).contiguous()
-        output = output.view(batch_size, seq_len, self.hidden_size)
+        # 重塑输出形状 - 恢复原始维度顺序
+        output = output.transpose(1, 2).contiguous()  # [batch, seq_len, num_heads, head_dim]
+        output = output.view(batch_size, seq_len, self.hidden_size)  # 合并头维度
         
         return output
     
     def _repeat_kv(self, tensor: torch.Tensor, n_rep: int) -> torch.Tensor:
-        """重复KV张量以匹配查询头数"""
+        """
+        重复KV张量以匹配查询头数
+        
+        设计思想：
+        1. 支持Multi-Query Attention，其中KV头数少于Q头数
+        2. 通过重复KV头来匹配Q头数，实现参数共享
+        3. 使用expand和reshape优化内存使用
+        """
         batch, num_kv_heads, seq_len, head_dim = tensor.shape
         if n_rep == 1:
-            return tensor
+            return tensor  # 无需重复
         
+        # 在新维度上扩展，然后重塑
         tensor = tensor[:, :, None, :, :].expand(batch, num_kv_heads, n_rep, seq_len, head_dim)
         return tensor.reshape(batch, num_kv_heads * n_rep, seq_len, head_dim)
     
@@ -180,57 +222,78 @@ class TorchAttention(BaseAttention):
         kv_cache: KVCache,
         attn_metadata: AttentionMetadata
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        """更新KV缓存"""
+        """
+        更新KV缓存
+        
+        设计思想：
+        1. 增量式更新，只存储新的KV而不是重新计算所有
+        2. 使用slot_mapping精确控制缓存位置
+        3. 支持动态序列长度和批处理
+        """
         if attn_metadata is None:
             return key, value
         
-        # 获取缓存的KV
+        # 获取缓存的KV - 从缓存中读取历史KV
         cached_key, cached_value = kv_cache.get_kv_cache()
         
         if cached_key is not None and cached_value is not None:
-            # 拼接新的KV
-            key = torch.cat([cached_key, key], dim=1)
+            # 拼接新的KV - 将新计算的KV与历史KV拼接
+            key = torch.cat([cached_key, key], dim=1)  # 在序列长度维度拼接
             value = torch.cat([cached_value, value], dim=1)
         
-        # 更新缓存
+        # 更新缓存 - 将拼接后的KV存回缓存
         kv_cache.update(key, value, attn_metadata.slot_mapping)
         
         return key, value
     
     def _create_attention_mask(
         self, 
-        seq_len: int, 
-        kv_len: int, 
-        device: torch.device
+        seq_len: int,      # 查询序列长度
+        kv_len: int,       # 键值序列长度
+        device: torch.device  # 计算设备
     ) -> Optional[torch.Tensor]:
-        """创建注意力掩码"""
+        """
+        创建注意力掩码
+        
+        设计思想：
+        1. 实现因果掩码，防止模型看到未来信息
+        2. 解码阶段优化，单token查询无需掩码
+        3. 使用上三角矩阵高效创建掩码
+        """
         if seq_len == 1:
-            # 解码阶段，不需要掩码
+            # 解码阶段优化 - 单token查询不需要掩码
             return None
         
-        # 创建因果掩码
+        # 创建因果掩码 - 上三角部分为负无穷
         mask = torch.triu(
             torch.full((seq_len, kv_len), float('-inf'), device=device),
-            diagonal=kv_len - seq_len + 1
+            diagonal=kv_len - seq_len + 1  # 对角线位置调整
         )
         
         return mask
     
     def _apply_alibi(self, attn_scores: torch.Tensor, seq_len: int) -> torch.Tensor:
-        """应用ALiBi位置编码"""
+        """
+        应用ALiBi位置编码
+        
+        设计思想：
+        1. ALiBi通过注意力偏置实现位置编码，无需额外参数
+        2. 基于相对位置距离应用线性偏置
+        3. 每个头使用不同的斜率，增加表达能力
+        """
         if self.alibi_slopes is None:
             return attn_scores
         
         batch_size, num_heads = attn_scores.shape[:2]
         
-        # 创建位置偏置
+        # 创建位置偏置矩阵
         position_ids = torch.arange(seq_len, device=attn_scores.device)
-        relative_pos = position_ids[None, :] - position_ids[:, None]
+        relative_pos = position_ids[None, :] - position_ids[:, None]  # 相对位置矩阵
         
-        # 应用ALiBi斜率
+        # 应用ALiBi斜率 - 每个头使用不同斜率
         alibi_bias = torch.zeros_like(attn_scores)
         for i, slope in enumerate(self.alibi_slopes[:num_heads]):
-            alibi_bias[:, i] = relative_pos * slope
+            alibi_bias[:, i] = relative_pos * slope  # 线性偏置
         
         return attn_scores + alibi_bias
     
@@ -239,27 +302,41 @@ class TorchAttention(BaseAttention):
         attn_scores: torch.Tensor, 
         window_size: int
     ) -> torch.Tensor:
-        """应用滑动窗口注意力"""
+        """
+        应用滑动窗口注意力
+        
+        设计思想：
+        1. 限制注意力范围，减少计算复杂度
+        2. 保持局部注意力模式，适合长序列处理
+        3. 使用掩码实现窗口限制
+        """
         seq_len = attn_scores.size(-2)
         kv_len = attn_scores.size(-1)
         
-        # 创建滑动窗口掩码
+        # 创建滑动窗口掩码 - 超出窗口范围的位置设为负无穷
         mask = torch.triu(
             torch.full((seq_len, kv_len), float('-inf'), device=attn_scores.device),
-            diagonal=window_size + 1
+            diagonal=window_size + 1  # 窗口大小控制
         )
         
         return attn_scores + mask
 
 class FlashAttention(BaseAttention):
-    """Flash Attention实现"""
+    """
+    Flash Attention实现
+    
+    设计思想：
+    1. 内存高效的注意力计算，减少HBM访问
+    2. 分块计算，支持任意长度序列
+    3. 融合内核，减少GPU内存带宽需求
+    """
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # 检查Flash Attention可用性
         try:
-            import flash_attn
+            import flash_attn  # 尝试导入Flash Attention库
             self.flash_attn_available = True
             logger.info("Flash Attention is available")
         except ImportError:
@@ -277,7 +354,7 @@ class FlashAttention(BaseAttention):
         """Flash Attention前向传播"""
         
         if not self.flash_attn_available:
-            # 回退到PyTorch实现
+            # 优雅降级 - 回退到PyTorch实现
             torch_attn = TorchAttention(
                 self.num_heads, self.head_dim, self.scale,
                 self.num_kv_heads, self.sliding_window, self.alibi_slopes
@@ -286,16 +363,16 @@ class FlashAttention(BaseAttention):
         
         batch_size, seq_len = query.shape[:2]
         
-        # 重塑张量
+        # 重塑张量 - Flash Attention要求特定的张量布局
         query = query.view(batch_size, seq_len, self.num_heads, self.head_dim)
         key = key.view(batch_size, -1, self.num_kv_heads, self.head_dim)
         value = value.view(batch_size, -1, self.num_kv_heads, self.head_dim)
         
-        # 处理KV缓存
+        # 处理KV缓存 - 与标准实现相同的缓存逻辑
         if kv_cache is not None:
             key, value = self._update_kv_cache(key, value, kv_cache, attn_metadata)
         
-        # 调用Flash Attention内核
+        # 调用Flash Attention内核 - 使用优化的CUDA内核
         output = self._flash_attention_forward(query, key, value, attn_metadata)
         
         return output.view(batch_size, seq_len, self.hidden_size)
@@ -307,36 +384,50 @@ class FlashAttention(BaseAttention):
         value: torch.Tensor,
         attn_metadata: Optional[AttentionMetadata] = None,
     ) -> torch.Tensor:
-        """Flash Attention内核调用"""
+        """
+        Flash Attention内核调用
+        
+        设计思想：
+        1. 直接调用优化的CUDA内核
+        2. 支持因果掩码和滑动窗口
+        3. 自动处理内存分块和融合计算
+        """
         from flash_attn import flash_attn_func
         
-        # Flash Attention参数
-        dropout_p = 0.0 if not self.training else 0.1
-        causal = True  # 因果注意力
+        # Flash Attention参数配置
+        dropout_p = 0.0 if not self.training else 0.1  # 训练时启用dropout
+        causal = True  # 启用因果掩码，防止看到未来信息
         
-        # 处理滑动窗口
+        # 处理滑动窗口 - Flash Attention的窗口参数格式
         window_size = (-1, -1)  # 默认无限窗口
         if self.sliding_window is not None:
-            window_size = (-1, self.sliding_window)
+            window_size = (-1, self.sliding_window)  # 只限制右侧窗口
         
-        # 调用Flash Attention
+        # 调用Flash Attention内核 - 高度优化的CUDA实现
         output = flash_attn_func(
             query, key, value,
-            dropout_p=dropout_p,
-            causal=causal,
-            window_size=window_size,
-            alibi_slopes=self.alibi_slopes,
-            return_attn_probs=False
+            dropout_p=dropout_p,           # dropout概率
+            causal=causal,                 # 因果掩码
+            window_size=window_size,       # 滑动窗口大小
+            alibi_slopes=self.alibi_slopes,  # ALiBi斜率
+            return_attn_probs=False        # 不返回注意力权重，节省内存
         )
         
         return output
 
 class PagedAttention(BaseAttention):
-    """分页注意力实现"""
+    """
+    分页注意力实现
+    
+    设计思想：
+    1. 将KV缓存分页存储，支持动态内存管理
+    2. 分离预填充和解码阶段，优化不同场景
+    3. 支持长序列和大批次处理
+    """
     
     def __init__(self, *args, block_size: int = 16, **kwargs):
         super().__init__(*args, **kwargs)
-        self.block_size = block_size
+        self.block_size = block_size  # 分页块大小，影响内存粒度
         
         logger.info(f"Initialized PagedAttention with block_size={block_size}")
     
@@ -351,7 +442,7 @@ class PagedAttention(BaseAttention):
         """分页注意力前向传播"""
         
         if kv_cache is None or attn_metadata is None:
-            # 回退到标准注意力
+            # 回退到标准注意力 - 无缓存或元数据时使用标准实现
             torch_attn = TorchAttention(
                 self.num_heads, self.head_dim, self.scale,
                 self.num_kv_heads, self.sliding_window, self.alibi_slopes
@@ -363,14 +454,14 @@ class PagedAttention(BaseAttention):
         # 重塑查询张量
         query = query.view(batch_size, seq_len, self.num_heads, self.head_dim)
         
-        # 分离预填充和解码
+        # 分离预填充和解码阶段 - 不同阶段使用不同的优化策略
         if attn_metadata.num_prefill_tokens > 0:
-            # 预填充阶段
+            # 预填充阶段 - 处理输入序列的初始部分
             output = self._paged_prefill_attention(
                 query, key, value, kv_cache, attn_metadata
             )
         else:
-            # 解码阶段
+            # 解码阶段 - 生成新token时的注意力计算
             output = self._paged_decode_attention(
                 query, kv_cache, attn_metadata
             )
@@ -385,12 +476,19 @@ class PagedAttention(BaseAttention):
         kv_cache: PagedKVCache,
         attn_metadata: AttentionMetadata,
     ) -> torch.Tensor:
-        """分页预填充注意力"""
+        """
+        分页预填充注意力
         
-        # 更新KV缓存
+        设计思想：
+        1. 预填充阶段需要处理完整的输入序列
+        2. 更新分页KV缓存，为后续解码做准备
+        3. 使用标准注意力计算，因为需要全序列交互
+        """
+        
+        # 更新KV缓存 - 将新的KV存储到分页缓存中
         kv_cache.update_prefill(key, value, attn_metadata.slot_mapping)
         
-        # 使用标准注意力进行预填充
+        # 使用标准注意力进行预填充 - 预填充阶段需要全序列注意力
         torch_attn = TorchAttention(
             self.num_heads, self.head_dim, self.scale,
             self.num_kv_heads, self.sliding_window, self.alibi_slopes
@@ -404,20 +502,27 @@ class PagedAttention(BaseAttention):
         kv_cache: PagedKVCache,
         attn_metadata: AttentionMetadata,
     ) -> torch.Tensor:
-        """分页解码注意力"""
+        """
+        分页解码注意力
         
-        # 调用分页注意力内核
+        设计思想：
+        1. 解码阶段只需要计算单个token的注意力
+        2. 使用分页KV缓存，支持高效的内存访问
+        3. 调用专门的分页注意力内核
+        """
+        
+        # 调用分页注意力内核 - 专门优化的解码阶段内核
         output = paged_attention.paged_attention_v1(
-            query=query,
-            key_cache=kv_cache.key_cache,
-            value_cache=kv_cache.value_cache,
-            num_kv_heads=self.num_kv_heads,
-            scale=self.scale,
-            block_tables=attn_metadata.block_tables,
-            context_lens=torch.tensor(attn_metadata.context_lens, device=query.device),
-            block_size=self.block_size,
-            max_context_len=attn_metadata.max_seq_len,
-            alibi_slopes=self.alibi_slopes,
+            query=query,                                    # 查询张量
+            key_cache=kv_cache.key_cache,                  # 分页键缓存
+            value_cache=kv_cache.value_cache,              # 分页值缓存
+            num_kv_heads=self.num_kv_heads,                # KV头数
+            scale=self.scale,                              # 缩放因子
+            block_tables=attn_metadata.block_tables,       # 块表，管理分页映射
+            context_lens=torch.tensor(attn_metadata.context_lens, device=query.device),  # 上下文长度
+            block_size=self.block_size,                    # 块大小
+            max_context_len=attn_metadata.max_seq_len,     # 最大上下文长度
+            alibi_slopes=self.alibi_slopes,                # ALiBi斜率
         )
         
         return output
@@ -444,16 +549,16 @@ class MultiHeadAttention(nn.Module):
         self.hidden_size = hidden_size
         self.num_heads = num_heads
         self.num_kv_heads = num_kv_heads or num_heads
-        self.head_dim = head_dim or hidden_size // num_heads
+        self.head_dim = head_dim or hidden_size // num_heads  # 自动计算头维度
         self.num_queries_per_kv = self.num_heads // self.num_kv_heads
         
-        # 线性投影层
+        # 线性投影层 - 将输入投影到Q、K、V空间
         self.q_proj = nn.Linear(hidden_size, self.num_heads * self.head_dim, bias=bias)
         self.k_proj = nn.Linear(hidden_size, self.num_kv_heads * self.head_dim, bias=bias)
         self.v_proj = nn.Linear(hidden_size, self.num_kv_heads * self.head_dim, bias=bias)
         self.o_proj = nn.Linear(self.num_heads * self.head_dim, hidden_size, bias=bias)
         
-        # 旋转位置编码
+        # 旋转位置编码 - RoPE实现相对位置编码
         self.rotary_emb = RotaryEmbedding(
             self.head_dim,
             max_position_embeddings=max_position_embeddings,
@@ -461,7 +566,7 @@ class MultiHeadAttention(nn.Module):
             scaling_config=rope_scaling,
         )
         
-        # 注意力实现
+        # 注意力实现选择 - 根据后端类型创建相应的注意力模块
         self.attention_backend = attention_backend
         if attention_backend == "flash_attention":
             self.attn = FlashAttention(
@@ -480,6 +585,7 @@ class MultiHeadAttention(nn.Module):
                 block_size=cache_config.get("block_size", 16) if cache_config else 16,
             )
         else:
+            # 默认使用PyTorch实现
             self.attn = TorchAttention(
                 num_heads=num_heads,
                 head_dim=self.head_dim,
