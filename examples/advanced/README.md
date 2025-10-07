@@ -1,83 +1,89 @@
-# 🎯 真实场景进阶案例
+# 🎯 进阶实践案例
 
-> 基于费曼学习法：通过复杂场景应用，深化技术理解
+> 基于费曼学习法的高级技术应用
 
 ## 🎯 学习目标
 
-通过这些进阶示例，你将：
 - 🏗️ 掌握复杂系统的架构设计
 - ⚡ 学会性能优化的实战技巧
 - 🔧 具备解决生产环境问题的能力
-- 🚀 能够独立构建完整的推理服务
 
 ---
 
-## 📚 学习路径
+## 📚 费曼学习路径
 
-### 第一阶段：系统集成 (45-60分钟)
-**目标**: 理解完整系统的协调工作机制
+### 🧠 第一步：概念理解 (Understand)
+**目标**: 理解高级技术概念
 
 #### 📁 [04_scheduler/](04_scheduler/) - 智能调度系统
 ```bash
-cd 04_scheduler/
-python main.py
+cd 04_scheduler/ && python main.py
 ```
+**核心学习点**: 多请求调度策略、资源分配算法、优先级管理
 
-**学习重点**:
-- ✅ 理解多请求调度策略
-- ✅ 掌握资源分配算法
-- ✅ 学会优先级管理机制
-- ✅ 观察调度效果对比
-
-**核心概念验证**:
-```python
-# 调度策略对比实验
-python main.py --scheduler_policy fifo
-python main.py --scheduler_policy priority  
-python main.py --scheduler_policy intelligent
-```
-
----
+### 🛠️ 第二步：实践应用 (Practice)
+**目标**: 通过复杂场景深化理解
 
 #### 📁 [05_complete_inference/](05_complete_inference/) - 完整推理流程
 ```bash
-cd 05_complete_inference/
-python main.py
+cd 05_complete_inference/ && python main.py
+```
+**核心学习点**: 端到端推理流程、组件协同、性能监控
+
+#### 📁 [06_end_to_end_demo/](06_end_to_end_demo/) - 端到端系统
+```bash
+cd 06_end_to_end_demo/
+pip install -r requirements.txt
+python api_server.py
+```
+**核心学习点**: 生产级服务构建、API设计、客户端集成
+
+### 🔍 第三步：回顾简化 (Simplify)
+**目标**: 优化性能，简化复杂度
+
+#### 性能优化实验
+```bash
+# 调度策略对比
+python 04_scheduler/main.py --scheduler_policy fifo
+python 04_scheduler/main.py --scheduler_policy priority
+
+# 批处理大小对比
+python 05_complete_inference/main.py --batch_size 8
+python 05_complete_inference/main.py --batch_size 16
 ```
 
-**学习重点**:
-- ✅ 掌握端到端推理流程
-- ✅ 理解各组件协同工作
-- ✅ 学会性能监控和调优
-- ✅ 掌握错误处理机制
+#### 关键问题思考
+1. **调度策略**: 不同调度策略的适用场景？
+2. **性能瓶颈**: 如何识别和解决性能瓶颈？
+3. **系统设计**: 如何设计可扩展的推理服务？
 
-**性能优化实验**:
-```python
-# 不同配置的性能对比
-python main.py --batch_size 8 --max_tokens 512
-python main.py --batch_size 16 --max_tokens 1024
-python main.py --batch_size 32 --max_tokens 2048
-```
+### 🎯 第四步：系统整理 (Organize)
+**目标**: 构建完整的技术体系
+
+#### 综合实践项目
+1. **自定义调度器**: 实现自己的调度策略
+2. **性能监控**: 添加详细的性能指标
+3. **服务扩展**: 支持多模型并发推理
 
 ---
 
-### 第二阶段：生产级应用 (60-90分钟)
-**目标**: 构建可部署的生产级服务
+## 🚀 下一步学习
 
-#### 📁 [06_end_to_end_demo/](06_end_to_end_demo/) - 端到端完整系统
-```bash
-cd 06_end_to_end_demo/
+完成进阶示例后，推荐学习路径：
+1. **深度分析** → [代码分析](../../docs/03-code-analysis/) - 深入理解实现细节
+2. **高级主题** → [高级技术](../../docs/04-advanced-topics/) - 掌握前沿技术
+3. **实践任务** → [综合项目](../../docs/practice_tasks.md) - 挑战复杂项目
 
-# 安装依赖
-pip install -r requirements.txt
+---
 
-# 启动服务
-python api_server.py
+## 💡 费曼学习建议
 
-# 测试客户端 (新终端)
-python client_examples.py
+1. **理解**: 分析每个组件的设计思路
+2. **简化**: 识别系统的核心价值和瓶颈
+3. **实践**: 修改配置，观察性能变化
+4. **验证**: 设计自己的优化方案
 
-# 或使用 curl 测试
+> 进阶学习重在理解系统性思维和工程实践！
 bash curl_examples.sh
 ```
 
@@ -246,7 +252,6 @@ curl http://localhost:8000/metrics
 - 📚 [系统架构文档](../../docs/architecture.md)
 - 🔬 [性能优化指南](../../docs/performance.md)
 - 🛠️ [部署最佳实践](../../docs/deployment.md)
-- 🤝 [社区讨论](../../docs/community.md)
 
 ---
 

@@ -2,62 +2,38 @@
 
 欢迎来到 nano-vLLM 学习项目的文档中心！这里包含了从入门到精通的完整学习资料。
 
-## 📚 文档导航
+## 📚 文档结构
 
-### 🚀 快速开始 (00-quick-start)
-新手必读，快速上手 nano-vLLM 的基础指南。
+### 核心学习路径（费曼四步法）
 
-- **[入门指南](00-quick-start/README.md)** - 零基础开始学习 vLLM
-- **[常见问题](00-quick-start/faq.md)** - 新手常遇到的问题和解决方案
+#### 第一步：概念理解
+- **[基础概念](01-basic-concepts/)** - 核心技术原理详解
+  - 推理引擎基础
+  - 注意力机制优化
+  - 内存管理策略
+  - 张量并行技术
 
-**适合人群：** 完全没有 vLLM 经验的初学者  
-**预计时间：** 1-2 小时  
-**学习目标：** 理解基本概念，成功运行第一个示例
+#### 第二步：架构分析
+- **[架构设计](02-architecture/)** - 系统架构深度分析
+  - 整体架构设计
+  - 核心组件分析
+  - 数据流程梳理
+  - 接口设计原理
 
-### 📖 基础概念 (01-basic-concepts)
-深入理解 vLLM 的核心概念和基础知识。
+#### 第三步：代码实践
+- **[代码分析](03-code-analysis/)** - 源码深度解读
+  - 入口点分析
+  - 推理引擎实现
+  - 调度器机制
+  - 性能优化技术
 
-- **[核心概念详解](01-basic-concepts/README.md)** - Tokenization、Batching、Sampling 等
-- **[术语表](01-basic-concepts/glossary.md)** - 重要术语和概念解释
+#### 第四步：系统化总结
+- **[学习验证](self_assessment.md)** - 自我评估和检验
+- **[实践任务](practice_tasks.md)** - 动手练习巩固理解
+- **[答案解析](answers.md)** - 实践任务参考答案
 
-**适合人群：** 已完成快速开始的学习者  
-**预计时间：** 2-3 小时  
-**学习目标：** 掌握 vLLM 的基础理论知识
-
-### 🏗️ 架构设计 (02-architecture)
-了解 nano-vLLM 的系统架构和设计原理。
-
-- **[整体架构](02-architecture/README.md)** - 系统架构概览
-- **[核心组件](02-architecture/core-components.md)** - 各组件详细说明
-- **[数据流程](02-architecture/data-flow.md)** - 数据处理流程分析
-- **[性能架构](02-architecture/performance.md)** - 性能优化设计
-
-**适合人群：** 希望深入理解系统设计的开发者  
-**预计时间：** 4-6 小时  
-**学习目标：** 理解架构设计思路和实现原理
-
-### ⚙️ 实现细节 (03-implementation)
-深入代码实现，理解技术细节。
-
-- **[代码结构](03-implementation/code-structure.md)** - 代码组织和模块划分
-- **[关键算法](03-implementation/algorithms.md)** - 核心算法实现
-- **[优化技术](03-implementation/optimizations.md)** - 性能优化技术
-
-**适合人群：** 需要修改或扩展功能的开发者  
-**预计时间：** 6-8 小时  
-**学习目标：** 掌握实现细节，具备二次开发能力
-
-### 🚀 高级主题 (04-advanced-topics)
-高级功能和最佳实践指南。
-
-- **[最佳实践](04-advanced-topics/best-practices.md)** - 开发和使用最佳实践
-- **[性能优化](04-advanced-topics/performance-optimization.md)** - 深度性能优化指南
-- **[故障排除](04-advanced-topics/troubleshooting.md)** - 常见问题诊断和解决
-- **[扩展开发](04-advanced-topics/extensions.md)** - 功能扩展和定制开发
-
-**适合人群：** 有一定经验的开发者和系统管理员  
-**预计时间：** 8-12 小时  
-**学习目标：** 掌握高级技能，具备生产环境应用能力
+### 辅助学习资源
+- **[常见问题](faq.md)** - 学习过程中的疑难解答
 
 ## 🛤️ 推荐学习路径
 

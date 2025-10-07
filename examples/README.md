@@ -371,7 +371,6 @@ print(f"Debug: {variable_name} = {variable_value}")
 - [快速开始指南](../docs/00-quick-start/README.md)
 - [基础概念](../docs/01-basic-concepts/README.md)
 - [架构设计](../docs/02-architecture/README.md)
-- [故障排除](../docs/04-advanced-topics/troubleshooting.md)
 
 ### 🧪 测试用例
 - [基础推理测试](../tests/test_basic_inference.py)
