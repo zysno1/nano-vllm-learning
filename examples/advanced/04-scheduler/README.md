@@ -387,6 +387,6 @@ test_preemption_by_swap()
 
 ---
 
-**下一步**：[第五步：完整推理流程](../05_complete_inference/README.md)
+**下一步**：[第五步：完整推理流程](../05-complete-inference/README.md)
 
 在下一步中，我们将整合前面学到的所有组件，构建一个完整的LLM推理系统，并学习端到端的优化技巧。

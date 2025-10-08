@@ -601,7 +601,7 @@ def handle_cross_block_attention(self, query_pos: int, context_len: int):
 ## 🚀 下一步
 
 完成本步骤后，继续学习：
-- **第四步**：[调度器优化与批处理策略](../04_scheduler/)
+- **第四步**：[调度器优化与批处理策略](../04-scheduler/)
 - 深入理解 Continuous Batching
 - 学习请求优先级和公平性调度
 

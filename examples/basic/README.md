@@ -27,21 +27,21 @@ python 00-quick-start/hello_vllm.py
 ### 🛠️ 第二步：实践应用 (Practice)
 **目标**: 掌握核心技术的实际应用
 
-#### 📁 [01_model_loading/](01_model_loading/) - 模型加载机制
+#### 📁 [01-getting-started/](01-getting-started/) - 模型加载机制
 ```bash
-cd 01_model_loading/ && python main.py
+cd 01-getting-started/ && python main.py
 ```
 **核心学习点**: 模型加载流程、配置参数、内存管理
 
-#### 📁 [02_llm_engine/](02_llm_engine/) - LLM引擎核心
+#### 📁 [02-llm-engine/](02-llm-engine/) - LLM引擎核心
 ```bash
-cd 02_llm_engine/ && python main.py
+cd 02-llm-engine/ && python main.py
 ```
 **核心学习点**: 引擎初始化、请求处理、性能监控
 
-#### 📁 [03_paged_attention/](03_paged_attention/) - PagedAttention技术
+#### 📁 [03-paged-attention/](03-paged-attention/) - PagedAttention技术
 ```bash
-cd 03_paged_attention/ && python main.py
+cd 03-paged-attention/ && python main.py
 ```
 **核心学习点**: 分页内存管理、内存利用率优化
 

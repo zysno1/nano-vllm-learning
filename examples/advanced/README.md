@@ -15,24 +15,24 @@
 ### 🧠 第一步：概念理解 (Understand)
 **目标**: 理解高级技术概念
 
-#### 📁 [04_scheduler/](04_scheduler/) - 智能调度系统
+#### 📁 [04-scheduler/](04-scheduler/) - 智能调度系统
 ```bash
-cd 04_scheduler/ && python main.py
+cd 04-scheduler/ && python main.py
 ```
 **核心学习点**: 多请求调度策略、资源分配算法、优先级管理
 
 ### 🛠️ 第二步：实践应用 (Practice)
 **目标**: 通过复杂场景深化理解
 
-#### 📁 [05_complete_inference/](05_complete_inference/) - 完整推理流程
+#### 📁 [05-complete-inference/](05-complete-inference/) - 完整推理流程
 ```bash
-cd 05_complete_inference/ && python main.py
+cd 05-complete-inference/ && python main.py
 ```
 **核心学习点**: 端到端推理流程、组件协同、性能监控
 
-#### 📁 [06_end_to_end_demo/](06_end_to_end_demo/) - 端到端系统
+#### 📁 [06-end-to-end-demo/](06-end-to-end-demo/) - 端到端系统
 ```bash
-cd 06_end_to_end_demo/
+cd 06-end-to-end-demo/
 pip install -r requirements.txt
 python api_server.py
 ```

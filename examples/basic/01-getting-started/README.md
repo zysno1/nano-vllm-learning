@@ -94,8 +94,8 @@ A: 尝试增加批大小，使用 GPU 加速，优化模型配置。
 ## 🔗 相关资源
 
 - [快速开始](../00-quick-start/README.md) - 环境配置
-- [LLM引擎](../02_llm_engine/README.md) - 引擎机制
-- [PagedAttention](../03_paged_attention/README.md) - 注意力优化
+- [LLM引擎](../02-llm-engine/README.md) - 引擎机制
+- [PagedAttention](../03-paged-attention/README.md) - 注意力优化
 
 ---
 

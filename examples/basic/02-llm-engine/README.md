@@ -400,7 +400,7 @@ engine_args.use_async_output_proc = True
 ## 🚀 下一步
 
 完成本步骤后，继续学习：
-- **第三步**：[PagedAttention 机制与内存优化](../03_paged_attention/)
+- **第三步**：[PagedAttention 机制与内存优化](../03-paged-attention/)
 - 深入理解 KV Cache 的分块管理
 - 学习注意力计算的优化策略
 

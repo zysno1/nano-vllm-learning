@@ -90,7 +90,7 @@ jupyter notebook notebooks/
 python examples/basic/00-quick-start/hello_vllm.py
 
 # 体验高级功能
-python examples/advanced/06_end_to_end_demo/demo.py
+python examples/advanced/06-end-to-end-demo/demo.py
 ```
 
 ## 📚 学习资源
