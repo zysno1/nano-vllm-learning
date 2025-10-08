@@ -300,5 +300,5 @@ class AdaptiveBatchProcessor:
 
 ---
 
-*最后更新：2024年12月*
+*最后更新：2025年10月*
 *如有问题或建议，请提交 Issue 或 Pull Request*

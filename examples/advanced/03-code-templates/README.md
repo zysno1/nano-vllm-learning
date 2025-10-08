@@ -288,9 +288,9 @@ config.do_sample = False
 ## 🔗 相关资源
 
 ### 文档链接
-- [基础概念](../../docs/01-basic-concepts/) - 理论基础
-- [架构设计](../../docs/02-architecture/) - 系统架构
-- [代码分析](../../docs/03-code-analysis/) - 源码解析
+- [基础概念](../../docs/01-basic-concepts.md) - 理论基础
+- [架构设计](../../docs/02-architecture.md) - 系统架构
+- [代码分析](../../docs/03-code-analysis.md) - 源码解析
 - [高级主题](../../docs/04-advanced-topics/) - 进阶内容
 
 ### 示例代码

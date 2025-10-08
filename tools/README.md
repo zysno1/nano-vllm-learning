@@ -201,7 +201,7 @@ python tools/performance_benchmark.py --test all --verbose
 ## 📚 相关文档
 
 - [性能优化文档](../docs/03-optimization/)
-- [架构设计文档](../docs/02-architecture/)
+- [架构设计文档](../docs/02-architecture.md)
 - [使用示例](../notebooks/)
 
 ---

@@ -17,12 +17,12 @@
 
 | 序号 | 文件名 | 类型 | 用途 | 集成位置 |
 |------|--------|------|------|----------|
-| 1 | `paged-attention-visualization.svg` | 技术对比图 | PagedAttention vs 传统注意力机制 | `docs/01-basic-concepts/attention-optimization.md` |
-| 2 | `continuous-batching-visualization.svg` | 流程对比图 | Continuous Batching vs 静态批处理 | `docs/answers.md` |
-| 3 | `intelligent-scheduling-visualization.svg` | 架构图 | 智能调度策略架构 | `docs/answers.md` |
-| 4 | `system-architecture-diagram.svg` | 系统架构图 | nano-vLLM 整体架构 | `docs/02-architecture/overall-architecture.md` |
-| 5 | `data-flow-diagram.svg` | 数据流图 | 请求处理流程 | `docs/02-architecture/data-flow.md` |
-| 6 | `performance-comparison-chart.svg` | 性能图表 | 优化效果量化对比 | `docs/02-architecture/performance-architecture.md` |
+| 1 | `paged-attention-visualization.svg` | 技术对比图 | PagedAttention vs 传统注意力机制 | `docs/01-basic-concepts.md` |
+| 2 | `continuous-batching-visualization.svg` | 流程图 | 连续批处理机制 | `docs/01-basic-concepts.md` |
+| 3 | `intelligent-scheduling-visualization.svg` | 算法图 | 智能调度策略 | `docs/02-architecture.md` |
+| 4 | `system-architecture-diagram.svg` | 系统架构图 | nano-vLLM 整体架构 | `docs/02-architecture.md` |
+| 5 | `data-flow-diagram.svg` | 数据流图 | 请求处理流程 | `docs/02-architecture.md` |
+| 6 | `performance-comparison-chart.svg` | 性能图表 | 优化效果量化对比 | `docs/02-architecture.md` |
 | 7 | `feynman-learning-navigation.svg` | 导航图 | 费曼学习法路径 | `README.md` |
 
 ### 📋 设计规范
@@ -167,6 +167,6 @@
 
 ---
 
-**报告生成时间**: 2024年12月
+**报告生成时间**: 2025年10月
 **项目状态**: ✅ 已完成
 **下一步行动**: 持续监控和优化用户体验

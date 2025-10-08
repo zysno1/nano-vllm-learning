@@ -70,7 +70,7 @@ python 05_complete_inference/main.py --batch_size 16
 ## 🚀 下一步学习
 
 完成进阶示例后，推荐学习路径：
-1. **深度分析** → [代码分析](../../docs/03-code-analysis/) - 深入理解实现细节
+1. **深度分析** → [代码分析](../../docs/03-code-analysis.md) - 深入理解实现细节
 2. **高级主题** → [高级技术](../../docs/04-advanced-topics/) - 掌握前沿技术
 3. **实践任务** → [综合项目](../../docs/practice_tasks.md) - 挑战复杂项目
 

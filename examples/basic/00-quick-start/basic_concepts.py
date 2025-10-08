@@ -352,7 +352,7 @@ def print_summary():
     
     print(f"\n🚀 下一步学习建议:")
     print(f"   1. 运行 step_by_step_tutorial.py 进行深入学习")
-    print(f"   2. 阅读 docs/01-basic-concepts/ 理论文档")
+    print(f"   2. 阅读 docs/01-basic-concepts.md 理论文档")
     print(f"   3. 尝试 examples/01-basic-usage/ 中的更多示例")
     print(f"   4. 进行性能测试: examples/02-performance-testing/")
     

@@ -175,7 +175,7 @@ python tutorial_03_batch_processing.py
 
 ## 🔗 相关资源
 
-- [基础概念文档](../../docs/01-basic-concepts/)
+- [基础概念文档](../../docs/01-basic-concepts.md)
 - [快速入门示例](../00-quick-start/)
 - [基础使用示例](../01-basic-usage/)
 - [性能测试示例](../02-performance-testing/)

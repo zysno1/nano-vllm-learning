@@ -109,8 +109,8 @@ python hello_vllm.py 2>&1 | tee error.log
 完成快速开始后，建议继续学习：
 
 ### 📖 理论学习
-- [基础概念](../../docs/01-basic-concepts/) - 理解核心原理
-- [架构分析](../../docs/02-architecture/) - 了解系统设计
+- [基础概念](../../docs/01-basic-concepts.md) - 理解核心原理
+- [架构分析](../../docs/02-architecture.md) - 了解系统设计
 
 ### 💻 实践练习  
 - [基础使用](../01-basic-usage/) - 更多基础示例

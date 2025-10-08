@@ -62,10 +62,11 @@ python examples/advanced/06_end_to_end_demo/demo.py
 ## 📚 学习资源
 
 ### 核心文档
-- [**📚 完整学习指南**](./docs/learning-guide.md) - 基于费曼学习法的详细学习路径
-- [**🧠 基础概念**](./docs/01-basic-concepts/) - 推理引擎、注意力优化、内存管理
-- [**🏗️ 架构设计**](./docs/02-architecture/) - 系统架构、核心组件、数据流程
-- [**🔍 代码分析**](./docs/03-code-analysis/) - 源码深度解读、实现细节
+- [**📚 完整学习指南**](./docs/README.md) - 基于费曼学习法的详细学习路径和统一导航
+- [**🧠 基础概念**](./docs/01-basic-concepts.md) - 推理引擎、注意力优化、内存管理
+- [**🏗️ 架构设计**](./docs/02-architecture.md) - 系统架构、核心组件、数据流程
+- [**🔍 代码分析**](./docs/03-code-analysis.md) - 源码深度解读、实现细节
+- [**💻 核心代码逐行分析**](./docs/04-core-code-analysis.md) - 逐行注释与工作流程深度解析
 
 ### 实践资源
 - [**📖 交互式Notebooks**](./notebooks/) - 边学边练的Jupyter笔记本

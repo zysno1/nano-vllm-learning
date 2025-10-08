@@ -549,7 +549,7 @@ if __name__ == "__main__":
 #    - 集成到Web服务中
 # 
 # 📚 相关文档:
-#    - docs/01-basic-concepts/ - 基础概念
-#    - docs/02-architecture/ - 架构设计
+#    - docs/01-basic-concepts.md - 基础概念
+#    - docs/02-architecture.md - 架构设计
 #    - examples/01-basic-usage/ - 基础用法示例
 #    - examples/02-step-by-step-tutorials/ - 分步教程

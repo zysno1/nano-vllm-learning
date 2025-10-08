@@ -217,8 +217,8 @@ def print_learning_summary():
     print("   4. 了解性能测试: examples/02-performance-testing/")
     
     print("\n📖 推荐阅读：")
-    print("   • docs/01-basic-concepts/ - 理解核心概念")
-    print("   • docs/02-architecture/ - 学习系统架构")
+    print("   • docs/01-basic-concepts.md - 理解核心概念")
+    print("   • docs/02-architecture.md - 学习系统架构")
     print("   • examples/01-basic-usage/ - 更多基础示例")
     
     print("\n💡 记住：")

@@ -616,7 +616,7 @@ class FirstInferenceTutorial:
         next_steps = [
             "完成教程2: 参数探索 (tutorial_02_parameter_exploration.py)",
             "尝试examples/01-basic-usage/中的更多示例",
-            "阅读docs/01-basic-concepts/了解理论知识",
+            "阅读docs/01-basic-concepts.md了解理论知识",
             "实验不同的模型和参数组合"
         ]
         
