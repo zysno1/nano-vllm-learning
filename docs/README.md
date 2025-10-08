@@ -46,27 +46,27 @@ jupyter notebook notebooks/
 
 ### 🧠 第一阶段：概念理解 (1-2周)
 
-#### [01-基础概念](01-basic-concepts/)
-- **[推理引擎基础](01-basic-concepts/inference-engine-basics.md)** - LLM推理原理
-- **[注意力优化](01-basic-concepts/attention-optimization.md)** - PagedAttention深度解析  
-- **[内存管理](01-basic-concepts/memory-management.md)** - 高效内存管理技术
-- **[张量并行](01-basic-concepts/tensor-parallelism.md)** - 分布式推理技术
+#### [01-基础概念](01-basic-concepts.md)
+- **[推理引擎基础](01-basic-concepts.md#推理引擎基础)** - LLM推理原理
+- **[注意力优化](01-basic-concepts.md#注意力优化)** - PagedAttention深度解析  
+- **[内存管理](01-basic-concepts.md#内存管理)** - 高效内存管理技术
+- **[张量并行](01-basic-concepts.md#张量并行)** - 分布式推理技术
 
-#### [02-架构设计](02-architecture/)
-- **[整体架构](02-architecture/overall-architecture.md)** - 系统架构全貌
-- **[核心组件](02-architecture/core-components.md)** - 关键组件分析
-- **[数据流程](02-architecture/data-flow.md)** - 数据处理流程
-- **[接口设计](02-architecture/interface-design.md)** - API设计原理
-- **[性能架构](02-architecture/performance-architecture.md)** - 性能优化架构
+#### [02-架构设计](02-architecture.md)
+- **[整体架构](02-architecture.md#整体架构)** - 系统架构全貌
+- **[核心组件](02-architecture.md#核心组件)** - 关键组件分析
+- **[数据流程](02-architecture.md#数据流程)** - 数据处理流程
+- **[接口设计](02-architecture.md#接口设计)** - API设计原理
+- **[性能架构](02-architecture.md#性能架构)** - 性能优化架构
 
 ### 🔍 第二阶段：代码实践 (2-3周)
 
-#### [03-代码分析](03-code-analysis/)
-- **[核心模块](03-code-analysis/core/)** - 入口点、配置、采样参数
-- **[推理引擎](03-code-analysis/engine/)** - 引擎实现、调度器、性能优化
-- **[模型层](03-code-analysis/layers/)** - 注意力机制实现
-- **[模型实现](03-code-analysis/models/)** - 具体模型实现
-- **[工具模块](03-code-analysis/utils/)** - 辅助工具和加载器
+#### [03-代码分析](03-code-analysis.md)
+- **[核心模块](03-code-analysis.md#核心模块)** - 入口点、配置、采样参数
+- **[推理引擎](03-code-analysis.md#推理引擎)** - 引擎实现、调度器、性能优化
+- **[模型层](03-code-analysis.md#模型层)** - 注意力机制实现
+- **[模型实现](03-code-analysis.md#模型实现)** - 具体模型实现
+- **[工具模块](03-code-analysis.md#工具模块)** - 辅助工具和加载器
 
 #### [04-核心代码逐行分析](04-core-code-analysis/) ⭐ **新增章节**
 - **[核心数据结构](04-core-code-analysis/01-data-structures.md)** - 请求、响应、指标等核心对象
